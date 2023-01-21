@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dca8264a7ee42d5b8c0feb21b15c64, type: 3}
+  m_Name: Fisher Punch
+  m_EditorClassIdentifier: 
+  loop: 0
+  simulationFrameDuration: 2
+  frames:
+  - sprite: {fileID: 21300000, guid: 62ce01ddca719d34ea9648c586a7cc94, type: 3}
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    hitBoxes: []
+    hurtBoxes:
+    - ownerEntityHash: 0
+      position: {x: -2, y: 5}
+      size: {x: 8, y: 8}
+    frameCommands: []
+  - sprite: {fileID: 21300000, guid: d6a44ab95b0def041a7929981a2c23a1, type: 3}
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    hitBoxes: []
+    hurtBoxes:
+    - ownerEntityHash: 0
+      position: {x: -4, y: 11}
+      size: {x: 17, y: 17}
+    frameCommands: []
+  - sprite: {fileID: 21300000, guid: 76beef9fdae7b48468ddf07d0400a374, type: 3}
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    hitBoxes:
+    - ownerEntityHash: 0
+      position: {x: 8, y: 31}
+      size: {x: 18, y: 18}
+    hurtBoxes:
+    - ownerEntityHash: 0
+      position: {x: -7, y: 17}
+      size: {x: 25, y: 25}
+    frameCommands: []
+  - sprite: {fileID: 21300000, guid: 9125c204f566db048a92ebcb64d9d14a, type: 3}
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    hitBoxes:
+    - ownerEntityHash: 0
+      position: {x: 5, y: 37}
+      size: {x: 20, y: 20}
+    - ownerEntityHash: 0
+      position: {x: 17, y: 49}
+      size: {x: 20, y: 20}
+    hurtBoxes:
+    - ownerEntityHash: 0
+      position: {x: -8, y: 23}
+      size: {x: 35, y: 35}
+    frameCommands:
+    - {fileID: 11400000, guid: 1a9fad07536494edda502fb3c28f489f, type: 2}
+    - {fileID: 11400000, guid: 8e5436020cc144af8b8461203ef31da0, type: 2}
+  - sprite: {fileID: 21300000, guid: 9125c204f566db048a92ebcb64d9d14a, type: 3}
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    hitBoxes:
+    - ownerEntityHash: 0
+      position: {x: 5, y: 37}
+      size: {x: 20, y: 20}
+    - ownerEntityHash: 0
+      position: {x: 17, y: 49}
+      size: {x: 20, y: 20}
+    hurtBoxes:
+    - ownerEntityHash: 0
+      position: {x: -8, y: 23}
+      size: {x: 35, y: 35}
+    frameCommands: []
+  - sprite: {fileID: 21300000, guid: 76beef9fdae7b48468ddf07d0400a374, type: 3}
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    hitBoxes: []
+    hurtBoxes:
+    - ownerEntityHash: 0
+      position: {x: -7, y: 17}
+      size: {x: 25, y: 25}
+    frameCommands: []
+  - sprite: {fileID: 21300000, guid: d6a44ab95b0def041a7929981a2c23a1, type: 3}
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    hitBoxes: []
+    hurtBoxes:
+    - ownerEntityHash: 0
+      position: {x: -4, y: 11}
+      size: {x: 17, y: 17}
+    frameCommands: []
+  transitionableAnimations: []

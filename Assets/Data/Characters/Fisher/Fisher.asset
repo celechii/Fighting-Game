@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c6621456d5fb41788ed7f4d432ba991, type: 3}
+  m_Name: Fisher
+  m_EditorClassIdentifier: 
+  customData:
+  - variable: 0
+    value: 0
+    isBoolean: 0
+  - variable: 1
+    value: 100
+    isBoolean: 0
+  - variable: 2
+    value: 0
+    isBoolean: 0
+  - variable: 3
+    value: 0
+    isBoolean: 0
+  - variable: 4
+    value: 0
+    isBoolean: 1
+  initialAnimation: {fileID: 11400000, guid: bfe0e2862d075444881d6eaf3bdbc999, type: 2}
+  displayName: Fisher Hottie
+  groundSpeed: 40
+  groundAccel: 8
+  groundDecel: 7
+  airAccel: 6
+  airDecel: 2
+  jumpForce: 70
+  jumpDecel: 4
+  fallAccel: 7
+  jumpBufferFrames: 10
+  idleAnim: {fileID: 0}
+  runAnim: {fileID: 0}
+  jumpAnim: {fileID: 0}
+  airPeakAnim: {fileID: 0}
+  airFallAnim: {fileID: 0}
