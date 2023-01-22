@@ -8,7 +8,9 @@ public class AnimationEditorWindow : EditorWindow {
 	private int playingFrame;
 	private bool isPlaying;
 	private float timeStartedPlaying;
-	private float previewScale;
+	private float rawPreviewScale;
+	private const float scaleMultiplier = 0.1f;
+	private float PreviewScale => rawPreviewScale * scaleMultiplier;
 
 	private GUIStyle centerLabelStyle;
 	private GUIStyle rightLabelStyle;
@@ -57,10 +59,13 @@ public class AnimationEditorWindow : EditorWindow {
 
 			// header
 			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField($"{animData.name} (frame {editingFrame + 1})", EditorStyles.largeLabel);
+			GUILayout.Label($"{animData.name} (frame {editingFrame + 1})");
+			if (EditorGUILayout.LinkButton($"select"))
+				Selection.SetActiveObjectWithContext(animData, null);
+			// EditorGUILayout.Separator();
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("Zoom");
-			previewScale = EditorGUILayout.Slider(previewScale, 0.1f, 4, GUILayout.MinWidth(105));
+			rawPreviewScale = EditorGUILayout.Slider(rawPreviewScale, 1, 4, GUILayout.MinWidth(105), GUILayout.MaxWidth(200));
 			EditorGUILayout.EndHorizontal();
 
 			// preview area
@@ -158,8 +163,9 @@ public class AnimationEditorWindow : EditorWindow {
 
 		// draw sprite
 		float PPU = frameData.sprite.pixelsPerUnit;
-		Vector2 spriteSize = frameData.sprite.textureRect.size * ((Simulation.Instance?.simulationScale ?? 128) / PPU) * previewScale;
-		Rect spriteRect = new Rect(origin - new Vector2(spriteSize.x / 2f, spriteSize.y) + new Vector2(frameData.spriteOffset.x, -frameData.spriteOffset.y) * previewScale, spriteSize);
+		Vector2 pivotOffset = frameData.sprite.pivot * ((Simulation.Instance?.simulationScale ?? 128) / PPU) * PreviewScale;
+		Vector2 spriteSize = new Vector2(frameData.sprite.texture.width, frameData.sprite.texture.height) * ((Simulation.Instance?.simulationScale ?? 128) / PPU) * PreviewScale;
+		Rect spriteRect = new Rect(origin - new Vector2(0, spriteSize.y) - new Vector2(pivotOffset.x, -pivotOffset.y) + new Vector2(frameData.spriteOffset.x, -frameData.spriteOffset.y) * PreviewScale, spriteSize);
 		GUI.DrawTexture(spriteRect, frameData.sprite.texture);
 
 		float vBoxAlpha = isPlaying ? 0.2f : 0.3f;
@@ -169,8 +175,8 @@ public class AnimationEditorWindow : EditorWindow {
 
 		// hurt boxes
 		foreach (Simulation.VBox vBox in frameData.hurtBoxes) {
-			Vector2 size = (Vector2)vBox.size * previewScale;
-			GUI.DrawTexture(new Rect(origin + (new Vector2(vBox.position.x, -vBox.position.y) * previewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hurtBoxColour, 0, 0);
+			Vector2 size = (Vector2)vBox.size * PreviewScale;
+			GUI.DrawTexture(new Rect(origin + (new Vector2(vBox.position.x, -vBox.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hurtBoxColour, 0, 0);
 		}
 
 		Color hitBoxColour = Color.red;
@@ -178,8 +184,8 @@ public class AnimationEditorWindow : EditorWindow {
 
 		// hit boxes
 		foreach (Simulation.VBox vBox in frameData.hitBoxes) {
-			Vector2 size = (Vector2)vBox.size * previewScale;
-			GUI.DrawTexture(new Rect(origin + (new Vector2(vBox.position.x, -vBox.position.y) * previewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hitBoxColour, 0, 0);
+			Vector2 size = (Vector2)vBox.size * PreviewScale;
+			GUI.DrawTexture(new Rect(origin + (new Vector2(vBox.position.x, -vBox.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hitBoxColour, 0, 0);
 		}
 	}
 }

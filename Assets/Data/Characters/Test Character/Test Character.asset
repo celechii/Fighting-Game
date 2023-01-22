@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c6621456d5fb41788ed7f4d432ba991, type: 3}
+  m_Name: Test Character
+  m_EditorClassIdentifier: 
+  customData: []
+  initialAnimation: {fileID: 0}
+  displayName: 
+  groundSpeed: 10
+  groundAccel: 1
+  groundDecel: 1
+  airAccel: 1
+  airDecel: 1
+  jumpForce: 0
+  jumpDecel: 0
+  fallAccel: 0
+  jumpBufferFrames: 0
+  idleAnim: {fileID: 0}
+  runAnim: {fileID: 0}
+  jumpAnim: {fileID: 0}
+  airPeakAnim: {fileID: 0}
+  airFallAnim: {fileID: 0}
