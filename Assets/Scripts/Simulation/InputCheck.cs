@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,11 +29,36 @@ public class InputCheck : MonoBehaviour {
 			for (int i = 0; i < allInputs.Length; i++)
 				Current.Set(allInputs[i], GUILayout.Toggle(Current.Has(allInputs[i]), allInputs[i].MakeEnumReadable(), textStyle));
 
-			// bool moveLeft = GUILayout.Toggle(Current.moveLeft, "move left", textStyle);
-			// bool moveRight = GUILayout.Toggle(Current.moveRight, "move right", textStyle);
-			// bool jump = GUILayout.Toggle(Current.jump, "jump", textStyle);
-			// bool changeStance = GUILayout.Toggle(Current.changeStance, "change stance", textStyle);
 			GUILayout.EndArea();
+		}
+	}
+
+	public InputChange[] GenerateInputDataHistory(IList<Input> player1History, IList<Input> player2History) {
+		List<InputChange> changes = new() {
+			new(0, player1History[0], player2History[0])
+		};
+
+		int count = Mathf.Max(player1History.Count, player2History.Count);
+		for (int i = 1; i < count; i++) {
+			Input player1Delta = player1History[i] | player1History[i - 1];
+			Input player2Delta = player2History[i] | player2History[i - 1];
+
+			if (player1Delta > 0 || player2Delta > 0)
+				changes.Add(new(i, player1Delta, player2Delta));
+		}
+
+		return changes.ToArray();
+	}
+
+	public struct InputChange {
+		public int FrameNumber;
+		public Input Player1Delta;
+		public Input Player2Delta;
+
+		public InputChange(int frameNumber, Input player1Delta, Input player2Delta) {
+			FrameNumber = frameNumber;
+			Player1Delta = player1Delta;
+			Player2Delta = player2Delta;
 		}
 	}
 }
