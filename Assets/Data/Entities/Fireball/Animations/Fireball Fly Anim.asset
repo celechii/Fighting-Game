@@ -15,10 +15,13 @@ MonoBehaviour:
   loop: 0
   simulationFrameDuration: 2
   frames:
-  - sprite: {fileID: 0}
+  - sprite: {fileID: -2413806693520163455, guid: ce2d1aedad6db4718aee2aa5f08daed6, type: 3}
     spriteOffset: {x: 0, y: 0}
     frameFlags: 0
-    hitBoxes: []
+    hitBoxes:
+    - ownerEntityHash: 0
+      position: {x: 0, y: 64}
+      size: {x: 128, y: 128}
     hurtBoxes: []
     frameCommands: []
   transitionableAnimations: []

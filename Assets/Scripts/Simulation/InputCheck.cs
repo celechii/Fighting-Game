@@ -5,16 +5,16 @@ public class InputCheck : MonoBehaviour {
 
 	public Input Current;
 
-	public void OnMoveLeft(InputAction.CallbackContext ctx) => UpdateInput(ctx, ref Current.moveLeft);
-	public void OnMoveRight(InputAction.CallbackContext ctx) => UpdateInput(ctx, ref Current.moveRight);
-	public void OnJump(InputAction.CallbackContext ctx) => UpdateInput(ctx, ref Current.jump);
-	public void OnChangeStance(InputAction.CallbackContext ctx) => UpdateInput(ctx, ref Current.changeStance);
+	public void OnMoveLeft(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.MoveLeft);
+	public void OnMoveRight(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.MoveRight);
+	public void OnJump(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.Jump);
+	public void OnChangeStance(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.ChangeStance);
 
-	private void UpdateInput(InputAction.CallbackContext ctx, ref bool value) {
+	private void UpdateInput(InputAction.CallbackContext ctx, Input input) {
 		if (ctx.performed)
-			value = true;
+			Current.Add(input);
 		else if (ctx.canceled)
-			value = false;
+			Current.Remove(input);
 	}
 
 	private void OnGUI() {
@@ -23,22 +23,25 @@ public class InputCheck : MonoBehaviour {
 			textStyle.fontSize = 25;
 
 			GUILayout.BeginArea(new Rect(0, Screen.height / 2f, Screen.width / 2f, Screen.height / 2f));
-			Current.moveLeft = GUILayout.Toggle(Current.moveLeft, "move left", textStyle);
-			Current.moveRight = GUILayout.Toggle(Current.moveRight, "move right", textStyle);
-			Current.jump = GUILayout.Toggle(Current.jump, "jump", textStyle);
-			Current.changeStance = GUILayout.Toggle(Current.changeStance, "change stance", textStyle);
+
+			Input[] allInputs = (Input[])System.Enum.GetValues(typeof(Input));
+			for (int i = 0; i < allInputs.Length; i++)
+				Current.Set(allInputs[i], GUILayout.Toggle(Current.Has(allInputs[i]), allInputs[i].MakeEnumReadable(), textStyle));
+
+			// bool moveLeft = GUILayout.Toggle(Current.moveLeft, "move left", textStyle);
+			// bool moveRight = GUILayout.Toggle(Current.moveRight, "move right", textStyle);
+			// bool jump = GUILayout.Toggle(Current.jump, "jump", textStyle);
+			// bool changeStance = GUILayout.Toggle(Current.changeStance, "change stance", textStyle);
 			GUILayout.EndArea();
 		}
 	}
 }
 
-[System.Serializable]
-public struct Input {
-	public bool isConfirmed;
-	public bool moveLeft;
-	public bool moveRight;
-	public bool jump;
-	public bool changeStance;
-
-	public int MovementInput => (moveLeft ? -1 : 0) + (moveRight ? 1 : 0);
+[System.Flags]
+public enum Input {
+	IsConfirmed = 1 << 0,
+	MoveLeft = 1 << 1,
+	MoveRight = 1 << 2,
+	Jump = 1 << 3,
+	ChangeStance = 1 << 4
 }

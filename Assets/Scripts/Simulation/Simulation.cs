@@ -143,11 +143,15 @@ public class Simulation : MonoBehaviour {
 	}
 
 	private void ReadAndQueueInput() {
+		// create input frames at least up to target + buffer frames
 		while (LocalInputHistory.Count <= TargetFrame + inputBufferFrames)
 			LocalInputHistory.Add(new());
 		while (RemoteInputHistory.Count <= TargetFrame + inputBufferFrames)
 			RemoteInputHistory.Add(new());
-		LocalInputHistory[TargetFrame + inputBufferFrames] = inputCheck.Current;
+		
+		// from the next frame until the target frame, add current input
+		for (int i = CurrentFrame + 1; i <= TargetFrame; i++)
+			LocalInputHistory[i + inputBufferFrames] = inputCheck.Current;
 	}
 
 	private void RenderFrame() {

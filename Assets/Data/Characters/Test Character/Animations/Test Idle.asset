@@ -12,10 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79dca8264a7ee42d5b8c0feb21b15c64, type: 3}
   m_Name: Test Idle
   m_EditorClassIdentifier: 
-  loop: 0
-  simulationFrameDuration: 2
+  loop: 1
+  simulationFrameDuration: 10
   frames:
-  - sprite: {fileID: 0}
+  - sprite: {fileID: 21300000, guid: 4061fb867c37b46cfbd2ed1a6d647fb1, type: 3}
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    hitBoxes: []
+    hurtBoxes: []
+    frameCommands: []
+  - sprite: {fileID: 21300000, guid: 543e48339f4a14dd6b01ae7605a6e6b7, type: 3}
     spriteOffset: {x: 0, y: 0}
     frameFlags: 0
     hitBoxes: []

@@ -66,7 +66,7 @@ public class PlayerEntityData : EntityData {
 		prevInput = entity.playerOwner == 1 ? Simulation.Instance.PrevLocalInput : Simulation.Instance.PrevRemoteInput;
 
 		// check jump
-		if (CheckBufferedAction(() => isGrounded && currentInput.jump, () => currentInput.jump && !prevInput.jump, entity, EntityVar.BufferedJump, jumpBufferFrames))
+		if (CheckBufferedAction(() => isGrounded && currentInput.Has(Input.Jump), () => currentInput.Has(Input.Jump) && !prevInput.Has(Input.Jump), entity, EntityVar.BufferedJump, jumpBufferFrames))
 			entity.velocity.y = jumpForce;
 
 		if (!currentFrame.frameFlags.HasFlag(FrameFlags.FreezeFall))
@@ -101,15 +101,17 @@ public class PlayerEntityData : EntityData {
 		if (isGrounded)
 			return;
 
-		entity.velocity.y -= (currentInput.jump && entity.velocity.y > 0) ? jumpDecel : fallAccel;
+		entity.velocity.y -= (currentInput.Has(Input.Jump) && entity.velocity.y > 0) ? jumpDecel : fallAccel;
 	}
 
 	protected virtual void UpdateMovementInput(ref Simulation.Entity entity) {
 		int accel = isGrounded ? groundAccel : airAccel;
 		int decel = isGrounded ? groundDecel : airDecel;
 
-		if (currentInput.MovementInput != 0) {
-			entity.velocity.x = Mathf.Clamp(entity.velocity.x + (accel * currentInput.MovementInput), -groundSpeed, groundSpeed);
+		int movementInput = (currentInput.Has(Input.MoveLeft) ? -1 : 0) + (currentInput.Has(Input.MoveRight) ? 1 : 0);
+
+		if (movementInput != 0) {
+			entity.velocity.x = Mathf.Clamp(entity.velocity.x + (accel * movementInput), -groundSpeed, groundSpeed);
 		} else {
 			if (Mathf.Abs(entity.velocity.x) > 0)
 				entity.velocity.x -= Mathf.Min(Mathf.Abs(entity.velocity.x), decel) * (int)Mathf.Sign(entity.velocity.x);
