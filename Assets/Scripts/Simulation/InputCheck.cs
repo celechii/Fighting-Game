@@ -10,6 +10,7 @@ public class InputCheck : MonoBehaviour {
 	public void OnMoveRight(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.MoveRight);
 	public void OnJump(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.Jump);
 	public void OnChangeStance(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.ChangeStance);
+	public void OnLightAttack(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.LightAttack);
 
 	private void UpdateInput(InputAction.CallbackContext ctx, Input input) {
 		if (ctx.performed)
@@ -69,5 +70,6 @@ public enum Input {
 	MoveLeft = 1 << 1,
 	MoveRight = 1 << 2,
 	Jump = 1 << 3,
-	ChangeStance = 1 << 4
+	ChangeStance = 1 << 4,
+	LightAttack = 1 << 5
 }

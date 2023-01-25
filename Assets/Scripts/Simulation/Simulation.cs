@@ -116,10 +116,10 @@ public class Simulation : MonoBehaviour {
 		CustomEntityData.Remove(entityID);
 	}
 
-	public bool TryGetCustomData(int entityID, EntityVar variable, out int data) {
+	public bool TryGetCustomData(Entity entity, EntityVar variable, out int data) {
 		data = 0;
-		if (CustomEntityData.ContainsKey(entityID) && CustomEntityData[entityID].ContainsKey(variable)) {
-			data = CustomEntityData[entityID][variable];
+		if (CustomEntityData.ContainsKey(entity.ID) && CustomEntityData[entity.ID].ContainsKey(variable)) {
+			data = CustomEntityData[entity.ID][variable];
 			return true;
 		}
 		return false;
@@ -183,7 +183,7 @@ public class Simulation : MonoBehaviour {
 	}
 
 	private void ProcessHurtBoxes() {
-		Dictionary<int, List<HitBoxOverlap>> hitBoxOverlaps = new();
+		Dictionary<int, List<HitData>> hitBoxOverlaps = new();
 
 		// sort entities
 		List<Entity> player1Entities = new();
@@ -221,7 +221,7 @@ public class Simulation : MonoBehaviour {
 						if (hurtBox.OverlapAnyVBoxes(hitBoxFrameData.hitBoxes)) {
 							if (!hitBoxOverlaps.ContainsKey(hurtBoxEntity.ID))
 								hitBoxOverlaps.Add(hurtBoxEntity.ID, new());
-							hitBoxOverlaps[hurtBoxEntity.ID].Add(new HitBoxOverlap(hurtBoxEntity.ID, damage, hitBoxEntity.isFacingRight));
+							hitBoxOverlaps[hurtBoxEntity.ID].Add(new HitData(hurtBoxEntity.ID, damage, hitBoxEntity.isFacingRight));
 						}
 					}
 				}
@@ -355,14 +355,14 @@ public class Simulation : MonoBehaviour {
 		}
 	}
 
-	public struct HitBoxOverlap {
+	public struct HitData {
 		public int priority;
 		public int entityHitID;
 		public int damage;
 		public Vector2Int knockback;
 		public int stunFrames;
 
-		public HitBoxOverlap(int entityID, DamageCommand damageCommand, bool isFacingRight) {
+		public HitData(int entityID, DamageCommand damageCommand, bool isFacingRight) {
 			entityHitID = entityID;
 			priority = damageCommand.priority;
 			damage = damageCommand.damage;

@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "EntityData/Fireball")]
 public class FireballEntityData : EntityData {
 
-	public override Simulation.Entity ProcessHurtBoxes(Simulation.Entity entity, List<Simulation.HitBoxOverlap> hitBoxOverlaps) {
+	public override Simulation.Entity ProcessHurtBoxes(Simulation.Entity entity, List<Simulation.HitData> hitBoxOverlaps) {
 		return base.ProcessHurtBoxes(entity, hitBoxOverlaps);
 	}
 

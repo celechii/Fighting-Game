@@ -155,8 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1600228f9cf6d46298f3454773f7325e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LocalInputHistory: []
-  RemoteInputHistory: []
+  LocalInputHistory: 
+  RemoteInputHistory: 
   FrameByFrame: 1
   inputBufferFrames: 3
   maxRollbackFrames: 100
@@ -193,12 +193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a0811cf43894a2784b0136bed0709c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Current:
-    isConfirmed: 0
-    moveLeft: 0
-    moveRight: 0
-    jump: 0
-    changeStance: 0
+  Current: 0
 --- !u!114 &409325950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +323,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 9b4e8ab0-c25d-47fa-ac96-1a1ae3eca873
     m_ActionName: Gameplay/Change Stance[/Keyboard/tab]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 409325949}
+        m_TargetAssemblyTypeName: InputCheck, Assembly-CSharp
+        m_MethodName: OnLightAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 631df079-18f7-42cb-b2ca-dea115fb5f2f
+    m_ActionName: Gameplay/Light Attack[/Keyboard/e]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay

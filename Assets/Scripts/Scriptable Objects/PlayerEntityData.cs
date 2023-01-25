@@ -36,20 +36,27 @@ public class PlayerEntityData : EntityData {
 	private Input prevInput;
 	private Input currentInput;
 
-	public override Simulation.Entity ProcessHurtBoxes(Simulation.Entity entity, List<Simulation.HitBoxOverlap> hitBoxOverlaps) {
+	public override Simulation.Entity ProcessHurtBoxes(Simulation.Entity entity, List<Simulation.HitData> hitBoxOverlaps) {
+		Simulation.HitData hitData = hitBoxOverlaps[0];
+		
 		// check if we can skip *damage*
 		bool canSkipDamage = false;
 		AnimationData.FrameData frameData = entity.GetCurrentFrameData();
 		if (frameData.frameFlags.HasFlag(FrameFlags.Invincible) || Simulation.Instance.CustomEntityData[entity.ID][EntityVar.IFrames] > 0)
 			canSkipDamage = true;
-		else if (frameData.TryGetFrameCommand(out DamageCommand damage) && Simulation.Instance.TryGetCustomData(entity.ID, EntityVar.Health, out int currentHealth)) {
-			// deal damage
-			int newHealth = Mathf.Max(currentHealth - damage.damage, 0);
+		
+		// deal damage
+		if (!canSkipDamage && Simulation.Instance.TryGetCustomData(entity, EntityVar.Health, out int currentHealth)) {
+			int newHealth = Mathf.Max(0, currentHealth - hitData.damage);
 			Simulation.Instance.SetCustomData(entity, EntityVar.Health, newHealth);
 		}
 
-		// deal knockback
+		// deal knockback as simple set velocity
+		entity.velocity = hitData.knockback;
 		
+		// apply hitstun
+		// this OVERWRITES the number of stunframes
+		Simulation.Instance.SetCustomData(entity, EntityVar.StunFrames, hitData.stunFrames);
 
 		return entity;
 	}
