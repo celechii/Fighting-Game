@@ -9,8 +9,11 @@ public class InputCheck : MonoBehaviour {
 	public void OnMoveLeft(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.MoveLeft);
 	public void OnMoveRight(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.MoveRight);
 	public void OnJump(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.Jump);
-	public void OnChangeStance(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.ChangeStance);
 	public void OnLightAttack(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.LightAttack);
+	public void OnHeavyAttack(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.HeavyAttack);
+	public void OnDash(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.Dash);
+	public void OnCounter(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.Counter);
+	public void OnSpecial(InputAction.CallbackContext ctx) => UpdateInput(ctx, Input.Special);
 
 	private void UpdateInput(InputAction.CallbackContext ctx, Input input) {
 		if (ctx.performed)
@@ -70,6 +73,9 @@ public enum Input {
 	MoveLeft = 1 << 1,
 	MoveRight = 1 << 2,
 	Jump = 1 << 3,
-	ChangeStance = 1 << 4,
-	LightAttack = 1 << 5
+	LightAttack = 1 << 4,
+	HeavyAttack = 1 << 5,
+	Dash = 1 << 6,
+	Counter = 1 << 7,
+	Special = 1 << 8
 }

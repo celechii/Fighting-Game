@@ -311,22 +311,6 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 409325949}
         m_TargetAssemblyTypeName: InputCheck, Assembly-CSharp
-        m_MethodName: OnChangeStance
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 9b4e8ab0-c25d-47fa-ac96-1a1ae3eca873
-    m_ActionName: Gameplay/Change Stance[/Keyboard/tab]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 409325949}
-        m_TargetAssemblyTypeName: InputCheck, Assembly-CSharp
         m_MethodName: OnLightAttack
         m_Mode: 0
         m_Arguments:
@@ -339,6 +323,70 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 631df079-18f7-42cb-b2ca-dea115fb5f2f
     m_ActionName: Gameplay/Light Attack[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 409325949}
+        m_TargetAssemblyTypeName: InputCheck, Assembly-CSharp
+        m_MethodName: OnHeavyAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b75f5b07-6127-4c0f-a4dd-fc2ff97c5ed9
+    m_ActionName: Gameplay/Heavy Attack[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 409325949}
+        m_TargetAssemblyTypeName: InputCheck, Assembly-CSharp
+        m_MethodName: OnCounter
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d041a0cb-4ede-47b5-9333-847571324d05
+    m_ActionName: Gameplay/Counter
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 409325949}
+        m_TargetAssemblyTypeName: InputCheck, Assembly-CSharp
+        m_MethodName: OnSpecial
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 645332e8-fb8c-4e64-b0f2-1b28d023eb4b
+    m_ActionName: Gameplay/Special
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 409325949}
+        m_TargetAssemblyTypeName: InputCheck, Assembly-CSharp
+        m_MethodName: OnDash
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5ed17dcf-7b01-4122-8c3f-75970497b8be
+    m_ActionName: Gameplay/Dash[/DualShock4GamepadHID/buttonWest,/Keyboard/leftShift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay
