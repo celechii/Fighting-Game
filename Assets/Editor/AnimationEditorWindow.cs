@@ -59,8 +59,10 @@ public class AnimationEditorWindow : EditorWindow {
 
 			// header
 			EditorGUILayout.BeginHorizontal();
-			GUILayout.Label($"{animData.name} (frame {editingFrame + 1})");
-			if (EditorGUILayout.LinkButton($"select"))
+			float animationDuration = (float)animData.TotalFrames / Simulation.FrameRate;
+
+			GUILayout.Label($"{animData.name} (duration: {animationDuration.ToString("0.00")}s)");
+			if (Selection.activeObject != animData && EditorGUILayout.LinkButton($"select"))
 				Selection.SetActiveObjectWithContext(animData, null);
 			// EditorGUILayout.Separator();
 			GUILayout.FlexibleSpace();
@@ -86,20 +88,23 @@ public class AnimationEditorWindow : EditorWindow {
 
 		// draw the preview
 		GUIContent previewContent = new GUIContent("idk, nothin to show ya :O");
-		int frameCount = animData?.frames?.Count ?? 0;
+		int frameCount = isPlaying ? (animData?.TotalFrames ?? 0) : (animData?.frames?.Count ?? 0);
 		int previewFrame = isPlaying ? playingFrame : editingFrame;
 		previewFrame = Mathf.Clamp(previewFrame, 0, frameCount - 1);
 
 		// draw preview and hitbox info
 		Rect previewRect = GUILayoutUtility.GetRect(previewContent, bottomCenterImageStyle, GUILayout.ExpandWidth(true), GUILayout.MaxHeight(position.height * 0.5f));
-		if (frameCount > 0 && animData.frames[previewFrame].sprite != null)
-			DrawPreviewFrame(previewRect, animData.frames[previewFrame]);
+
+		AnimationData.FrameData previewFrameData = isPlaying ? animData.GetFrame(playingFrame) : animData.frames[previewFrame];
+
+		if (frameCount > 0 && previewFrameData.sprite != null)
+			DrawPreviewFrame(previewRect, previewFrameData);
 		else
 			GUI.Box(previewRect, previewContent, bottomCenterImageStyle);
 
 		// draw the control buttons
 		GUILayout.BeginHorizontal();
-		GUILayoutOption width69 = GUILayout.Width(69);
+		GUILayoutOption width = GUILayout.Width(69);
 
 		bool canPlay = frameCount > 1;
 
@@ -108,37 +113,38 @@ public class AnimationEditorWindow : EditorWindow {
 		if (isPlaying && !canPlay)
 			isPlaying = false;
 
-		if (GUILayout.Button(isPlaying ? "Stop" : "Play", width69)) {
+		if (GUILayout.Button(isPlaying ? "Stop" : "Play", width)) {
 			isPlaying = !isPlaying;
 			if (isPlaying) {
 				timeStartedPlaying = Time.realtimeSinceStartup;
 				playingFrame = 0;
+				animData.UpdateTotalFrameDuration();
 			}
 		}
 		EditorGUI.EndDisabledGroup();
 
 		if (isPlaying) {
-			playingFrame = (((int)((Time.realtimeSinceStartup - timeStartedPlaying) * 60)) / animData.simulationFrameDuration) % frameCount;
+			playingFrame = ((int)((Time.realtimeSinceStartup - timeStartedPlaying) * Simulation.FrameRate)) % animData.TotalFrames;
 		}
 
 		// Prev/Next buttons and frame counter
 		EditorGUI.BeginDisabledGroup(!canPlay || isPlaying);
 		GUILayout.FlexibleSpace();
-		if (GUILayout.Button("Prev", width69)) {
+		if (GUILayout.Button("Prev", width)) {
 			MoveEditingFrame(-1);
 		}
 
 		// frame counter
 		GUILayout.Label($"{Mathf.Min(frameCount, previewFrame + 1)}/{frameCount}", centerLabelStyle, GUILayout.Width(40));
 
-		if (GUILayout.Button("Next", width69)) {
+		if (GUILayout.Button("Next", width)) {
 			MoveEditingFrame(1);
 		}
 		GUILayout.FlexibleSpace();
 		EditorGUI.EndDisabledGroup();
 
 		// fps counter
-		GUILayout.Label($"at {(60 / animData.simulationFrameDuration)} FPS", rightLabelStyle, width69);
+		GUILayout.Label($"at {(Simulation.FrameRate / animData.simulationFrameDuration)} FPS", rightLabelStyle, width);
 
 		GUILayout.EndHorizontal();
 		EditorGUILayout.EndVertical();
