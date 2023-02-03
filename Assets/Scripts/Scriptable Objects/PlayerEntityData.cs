@@ -36,7 +36,7 @@ public class PlayerEntityData : EntityData {
 	private Input prevInput;
 	private Input currentInput;
 
-	public override Simulation.Entity ProcessHurtBoxes(Simulation.Entity entity, List<Simulation.HitData> hitBoxOverlaps) {
+	public override Entity ProcessHurtBoxes(Entity entity, List<Simulation.HitData> hitBoxOverlaps) {
 		Simulation.HitData hitData = hitBoxOverlaps[0];
 		
 		// check if we can skip *damage*
@@ -56,7 +56,7 @@ public class PlayerEntityData : EntityData {
 		
 		// apply hitstun
 		// this OVERWRITES the number of stunframes
-		Simulation.Instance.SetCustomData(entity, EntityVar.StunFrames, hitData.stunFrames);
+		Simulation.Instance.SetCustomData(entity, EntityVar.HitStunFrames, hitData.stunFrames);
 
 		return entity;
 	}
@@ -64,7 +64,7 @@ public class PlayerEntityData : EntityData {
 	/// <summary>
 	/// Process input, update player data, and return a new entity with updated state.
 	/// </summary>
-	public override Simulation.Entity UpdateBehaviour(Simulation.Entity entity) {
+	public override Entity UpdateBehaviour(Entity entity) {
 		isGrounded = entity.position.y == 0;
 
 		AnimationData.FrameData currentFrame = entity.GetCurrentFrameData();
@@ -86,7 +86,7 @@ public class PlayerEntityData : EntityData {
 		return entity;
 	}
 
-	protected bool CheckBufferedAction(System.Func<bool> condition, System.Func<bool> activator, Simulation.Entity entity, EntityVar bufferVariable, int maxBufferFrames) {
+	protected bool CheckBufferedAction(System.Func<bool> condition, System.Func<bool> activator, Entity entity, EntityVar bufferVariable, int maxBufferFrames) {
 		int bufferFrames = Simulation.Instance.CustomEntityData[entity.ID][bufferVariable];
 
 		if (activator.Invoke())
@@ -104,14 +104,14 @@ public class PlayerEntityData : EntityData {
 		return false;
 	}
 
-	protected virtual void UpdateFalling(ref Simulation.Entity entity) {
+	protected virtual void UpdateFalling(ref Entity entity) {
 		if (isGrounded)
 			return;
 
 		entity.velocity.y -= (currentInput.Has(Input.Jump) && entity.velocity.y > 0) ? jumpDecel : fallAccel;
 	}
 
-	protected virtual void UpdateMovementInput(ref Simulation.Entity entity) {
+	protected virtual void UpdateMovementInput(ref Entity entity) {
 		int accel = isGrounded ? groundAccel : airAccel;
 		int decel = isGrounded ? groundDecel : airDecel;
 
@@ -125,7 +125,7 @@ public class PlayerEntityData : EntityData {
 		}
 	}
 
-	protected virtual void UpdatePosition(ref Simulation.Entity entity) {
+	protected virtual void UpdatePosition(ref Entity entity) {
 		// update facing direction
 		if (Mathf.Abs(entity.velocity.x) > 10)
 			entity.isFacingRight = entity.velocity.x > 0;

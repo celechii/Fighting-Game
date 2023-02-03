@@ -61,7 +61,7 @@ public class AnimationEditorWindow : EditorWindow {
 			EditorGUILayout.BeginHorizontal();
 			float animationDuration = (float)animData.TotalFrames / Simulation.FrameRate;
 
-			GUILayout.Label($"{animData.name} (duration: {animationDuration.ToString("0.00")}s)");
+			GUILayout.Label($"{animData.name} (duration: {animationDuration.ToString("0.##")}s)");
 			if (Selection.activeObject != animData && EditorGUILayout.LinkButton($"select"))
 				Selection.SetActiveObjectWithContext(animData, null);
 			// EditorGUILayout.Separator();
@@ -180,18 +180,18 @@ public class AnimationEditorWindow : EditorWindow {
 		hurtBoxColour.a = vBoxAlpha;
 
 		// hurt boxes
-		foreach (Simulation.VBox vBox in frameData.hurtBoxes) {
-			Vector2 size = (Vector2)vBox.size * PreviewScale;
-			GUI.DrawTexture(new Rect(origin + (new Vector2(vBox.position.x, -vBox.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hurtBoxColour, 0, 0);
+		foreach (Box box in frameData.GetBoxes(Box.BoxType.HurtBox)) {
+			Vector2 size = (Vector2)box.size * PreviewScale;
+			GUI.DrawTexture(new Rect(origin + (new Vector2(box.position.x, -box.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hurtBoxColour, 0, 0);
 		}
 
 		Color hitBoxColour = Color.red;
 		hitBoxColour.a = vBoxAlpha;
 
 		// hit boxes
-		foreach (Simulation.VBox vBox in frameData.hitBoxes) {
-			Vector2 size = (Vector2)vBox.size * PreviewScale;
-			GUI.DrawTexture(new Rect(origin + (new Vector2(vBox.position.x, -vBox.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hitBoxColour, 0, 0);
+		foreach (Box box in frameData.GetBoxes(Box.BoxType.Hitbox)) {
+			Vector2 size = (Vector2)box.size * PreviewScale;
+			GUI.DrawTexture(new Rect(origin + (new Vector2(box.position.x, -box.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hitBoxColour, 0, 0);
 		}
 	}
 }

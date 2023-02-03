@@ -33,7 +33,7 @@ public class EntityManager : MonoBehaviour {
 		activeEntities.Remove(entity);
 	}
 
-	public void UpdateEntities(List<Simulation.Entity> entities) {
+	public void UpdateEntities(List<Entity> entities) {
 		// assign all 
 		for (int i = 0; i < entities.Count; i++) {
 			EntityObject entityObject;

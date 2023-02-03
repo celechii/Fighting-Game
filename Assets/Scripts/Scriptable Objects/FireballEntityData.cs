@@ -4,11 +4,11 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "EntityData/Fireball")]
 public class FireballEntityData : EntityData {
 
-	public override Simulation.Entity ProcessHurtBoxes(Simulation.Entity entity, List<Simulation.HitData> hitBoxOverlaps) {
+	public override Entity ProcessHurtBoxes(Entity entity, List<Simulation.HitData> hitBoxOverlaps) {
 		return base.ProcessHurtBoxes(entity, hitBoxOverlaps);
 	}
 
-	public override Simulation.Entity UpdateBehaviour(Simulation.Entity entity) {
+	public override Entity UpdateBehaviour(Entity entity) {
 		entity.position += entity.velocity;
 		return entity;
 	}

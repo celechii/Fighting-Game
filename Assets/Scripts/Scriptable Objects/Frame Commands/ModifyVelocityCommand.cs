@@ -11,7 +11,7 @@ public class ModifyVelocityCommand : FrameCommand {
 	public ModificationMode mode;
 	public Vector2Int velocity;
 	
-	public Simulation.Entity Modify(Simulation.Entity entity) {
+	public Entity Modify(Entity entity) {
 		Vector2Int velocity = this.velocity * (entity.isFacingRight ? new Vector2Int(-1, 1) : Vector2Int.one);
 		switch (mode) {
 			case ModificationMode.Add:

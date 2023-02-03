@@ -2,7 +2,7 @@ public enum EntityVar {
 	
 	Health,
 	IFrames,
-	StunFrames,
-	StateLocked,
+	HitStunFrames,
+	HitStopFrames,
 	BufferedJump
 }

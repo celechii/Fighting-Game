@@ -85,8 +85,7 @@ public class AnimationData : ScriptableObject, INameableElement {
 		public int frameDuration;
 		public Vector2Int spriteOffset;
 		public FrameFlags frameFlags;
-		public List<Simulation.VBox> hitBoxes;
-		public List<Simulation.VBox> hurtBoxes;
+		public List<Box> boxes;
 		public List<FrameCommand> frameCommands;
 
 		public bool TryGetFrameCommand<T>(out T command)where T : FrameCommand {
@@ -97,5 +96,8 @@ public class AnimationData : ScriptableObject, INameableElement {
 		}
 
 		public string GetArrayElementName(int index) => $"Frame {index + 1}";
+
+		public List<Box> GetBoxes(Box.BoxType type) => boxes.FindAll(x => x.type == type);
+
 	}
 }

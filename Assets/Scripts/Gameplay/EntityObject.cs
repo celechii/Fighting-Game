@@ -6,7 +6,7 @@ public class EntityObject : MonoBehaviour {
 
 	[ReadOnly]
 	[SerializeField]
-	private Simulation.Entity latestEntity;
+	private Entity latestEntity;
 
 	private Transform entityTrans;
 	private SpriteRenderer spriteRenderer;
@@ -16,7 +16,7 @@ public class EntityObject : MonoBehaviour {
 		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
-	public void UpdateEntity(Simulation.Entity entity) {
+	public void UpdateEntity(Entity entity) {
 		EntityID = entity.ID;
 		AnimationData.FrameData currentFrame = entity.GetCurrentFrameData();
 		spriteRenderer.sprite = currentFrame.sprite;
@@ -48,12 +48,12 @@ public class EntityObject : MonoBehaviour {
 
 		// draw hurtboxes
 		Gizmos.color = hurtboxColour;
-		foreach (Simulation.VBox hurtbox in currentAnimFrame.hurtBoxes)
-			Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredVBox(hurtbox).position), Simulation.Instance.GetWorldVector(hurtbox.size));
+		foreach (Box hurtbox in currentAnimFrame.GetBoxes(Box.BoxType.HurtBox))
+			Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredBox(hurtbox).position), Simulation.Instance.GetWorldVector(hurtbox.size));
 
 		// draw hitboxes
 		Gizmos.color = hitboxColour;
-		foreach (Simulation.VBox hitbox in currentAnimFrame.hitBoxes)
-			Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredVBox(hitbox).position), Simulation.Instance.GetWorldVector(hitbox.size));
+		foreach (Box hitbox in currentAnimFrame.GetBoxes(Box.BoxType.Hitbox))
+			Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredBox(hitbox).position), Simulation.Instance.GetWorldVector(hitbox.size));
 	}
 }

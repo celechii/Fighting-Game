@@ -10,8 +10,8 @@ public class EntityData : ScriptableObject {
 	public CustomData[] customData;
 	public AnimationData initialAnimation;
 
-	public virtual Simulation.Entity ProcessHurtBoxes(Simulation.Entity entity, List<Simulation.HitData> hitBoxOverlaps) => entity;
-	public virtual Simulation.Entity UpdateBehaviour(Simulation.Entity entity) => entity;
+	public virtual Entity ProcessHurtBoxes(Entity entity, List<Simulation.HitData> hitBoxOverlaps) => entity;
+	public virtual Entity UpdateBehaviour(Entity entity) => entity;
 
 	[System.Serializable]
 	public struct CustomData : INameableElement {

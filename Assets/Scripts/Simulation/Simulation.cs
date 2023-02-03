@@ -210,18 +210,22 @@ public class Simulation : MonoBehaviour {
 		}
 
 		void GenerateOverlaps(List<Entity> hurtBoxEntities, List<Entity> hitBoxEntities) {
-			foreach (Entity hurtBoxEntity in hurtBoxEntities) {
-				foreach (VBox hurtBox in hurtBoxEntity.GetCurrentFrameData().hurtBoxes) {
+			foreach (Entity entityToBeHit in hurtBoxEntities) {
+				List<Box> hurtBoxes = entityToBeHit.GetCurrentFrameData().GetBoxes(Box.BoxType.HurtBox);
+				
+				
+				foreach (Box hurtBox in hurtBoxes) {
+					
 					foreach (Entity hitBoxEntity in hitBoxEntities) {
 						AnimationData.FrameData hitBoxFrameData = hitBoxEntity.GetCurrentFrameData();
 						DamageCommand damage;
 						if (!hitBoxFrameData.TryGetFrameCommand(out damage))
 							continue;
 
-						if (hurtBox.OverlapAnyVBoxes(hitBoxFrameData.hitBoxes)) {
-							if (!hitBoxOverlaps.ContainsKey(hurtBoxEntity.ID))
-								hitBoxOverlaps.Add(hurtBoxEntity.ID, new());
-							hitBoxOverlaps[hurtBoxEntity.ID].Add(new HitData(hurtBoxEntity.ID, damage, hitBoxEntity.isFacingRight));
+						if (hurtBox.OverlapAnyBoxes(hitBoxFrameData.GetBoxes(Box.BoxType.Hitbox))) {
+							if (!hitBoxOverlaps.ContainsKey(entityToBeHit.ID))
+								hitBoxOverlaps.Add(entityToBeHit.ID, new());
+							hitBoxOverlaps[entityToBeHit.ID].Add(new HitData(entityToBeHit.ID, damage, hitBoxEntity.isFacingRight));
 						}
 					}
 				}
@@ -281,77 +285,6 @@ public class Simulation : MonoBehaviour {
 			customEntityData = new();
 			foreach (KeyValuePair<int, Dictionary<EntityVar, int>> data in customData)
 				customEntityData.Add(data.Key, new(data.Value));
-		}
-	}
-
-	[System.Serializable]
-	public struct Entity {
-		public static int entityID;
-		[ReadOnly]
-		public int ID;
-
-		public int playerOwner; // 0 for no owner, 1 for player 1, 2 for player 2
-		public int entityHash;
-		public int animationHash;
-		public int animationFrame;
-		public Vector2Int position;
-		public Vector2Int velocity;
-		public bool isFacingRight;
-
-		public Entity(EntityData entityData, int playerOwner) {
-			ID = entityID;
-			entityID++;
-
-			this.playerOwner = playerOwner;
-			this.entityHash = ObjectRef.GetHash(entityData);
-			this.animationHash = ObjectRef.GetHash(entityData.initialAnimation);
-
-			animationFrame = 0;
-			position = Vector2Int.zero;
-			velocity = Vector2Int.zero;
-			isFacingRight = true;
-		}
-
-		public AnimationData.FrameData GetCurrentFrameData() {
-			return ObjectRef.GetObject<AnimationData>(animationHash).GetFrame(animationFrame);
-		}
-
-		public VBox GetMirroredVBox(VBox vBox) {
-			if (isFacingRight)
-				return vBox;
-			else {
-				vBox.position = new Vector2Int(-vBox.position.x, vBox.position.y);
-				return vBox;
-			}
-		}
-
-		public void SetAnimation(AnimationData animationData) {
-			animationHash = ObjectRef.GetHash(animationData);
-		}
-
-		public void NextAnimationFrame() {
-			animationFrame = ObjectRef.GetObject<AnimationData>(animationHash).GetNextFrameIndex(animationFrame);
-		}
-	}
-
-	[System.Serializable]
-	public struct VBox {
-		[HideInInspector]
-		public int ownerEntityHash;
-		public Vector2Int position;
-		public Vector2Int size;
-
-		public bool OverlapAnyVBoxes(IList<VBox> vBoxes) {
-			foreach (VBox hurtBox in vBoxes)
-				if (OverlapVBox(hurtBox))
-					return true;
-			return false;
-		}
-
-		public bool OverlapVBox(VBox other) {
-			Vector2Int posDif = (other.position - position) * 2;
-			Vector2Int combinedSize = other.size + size;
-			return Mathf.Abs(posDif.x) < combinedSize.x && Mathf.Abs(posDif.y) < combinedSize.y;
 		}
 	}
 
