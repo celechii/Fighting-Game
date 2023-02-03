@@ -174,10 +174,10 @@ public class AnimationEditorWindow : EditorWindow {
 		Rect spriteRect = new Rect(origin - new Vector2(0, spriteSize.y) - new Vector2(pivotOffset.x, -pivotOffset.y) + new Vector2(frameData.spriteOffset.x, -frameData.spriteOffset.y) * PreviewScale, spriteSize);
 		GUI.DrawTexture(spriteRect, frameData.sprite.texture);
 
-		float vBoxAlpha = isPlaying ? 0.2f : 0.3f;
+		float boxAlpha = isPlaying ? 0.2f : 0.3f;
 
 		Color hurtBoxColour = Color.yellow;
-		hurtBoxColour.a = vBoxAlpha;
+		hurtBoxColour.a = boxAlpha;
 
 		// hurt boxes
 		foreach (Box box in frameData.GetBoxes(Box.BoxType.HurtBox)) {
@@ -186,7 +186,7 @@ public class AnimationEditorWindow : EditorWindow {
 		}
 
 		Color hitBoxColour = Color.red;
-		hitBoxColour.a = vBoxAlpha;
+		hitBoxColour.a = boxAlpha;
 
 		// hit boxes
 		foreach (Box box in frameData.GetBoxes(Box.BoxType.Hitbox)) {
