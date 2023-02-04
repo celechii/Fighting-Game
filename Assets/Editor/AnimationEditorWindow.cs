@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class AnimationEditorWindow : EditorWindow {
 
+	private Color noActiveFramesColour = Color.gray;
+	private Color startupFrameColour;
+	private Color activeFrameColour;
+	private Color recoveryFrameColour;
+
 	private AnimationData animData;
 	private int editingFrame;
 	private int playingFrame;
@@ -22,11 +27,17 @@ public class AnimationEditorWindow : EditorWindow {
 		GetWindow<AnimationEditorWindow>("sick as hell animation editor");
 	}
 
+	private void OnEnable() {
+		ColorUtility.TryParseHtmlString("#36B37E", out startupFrameColour);
+		ColorUtility.TryParseHtmlString("#FF5D5D", out activeFrameColour);
+		ColorUtility.TryParseHtmlString("#0069B6", out recoveryFrameColour);
+	}
+
 	private void Update() {
 		if (Application.isPlaying)
 			return;
 
-		if (hasFocus || focusedWindow.name.Equals("Inspector"))
+		if (isPlaying || Selection.activeObject == animData)
 			Repaint();
 	}
 
@@ -143,17 +154,101 @@ public class AnimationEditorWindow : EditorWindow {
 		GUILayout.FlexibleSpace();
 		EditorGUI.EndDisabledGroup();
 
+		void MoveEditingFrame(int direction) {
+			editingFrame = (editingFrame + direction) % frameCount;
+			if (editingFrame < 0)
+				editingFrame += frameCount;
+		}
+
 		// fps counter
 		GUILayout.Label($"at {(Simulation.FrameRate / animData.simulationFrameDuration)} FPS", rightLabelStyle, width);
 
 		GUILayout.EndHorizontal();
 		EditorGUILayout.EndVertical();
 
-		void MoveEditingFrame(int direction) {
-			editingFrame = (editingFrame + direction) % frameCount;
-			if (editingFrame < 0)
-				editingFrame += frameCount;
+		DrawFrameData();
+	}
+
+	private enum FrameType {
+		None,
+		Startup,
+		Active,
+		Recovery
+	}
+
+	private void DrawFrameData() {
+		Vector2 frameSize = new Vector2(10, 15);
+		float spacing = 5f;
+		Rect frameDataRect = GUILayoutUtility.GetRect(GUIContent.none, bottomCenterImageStyle, GUILayout.ExpandWidth(true), GUILayout.MaxHeight(frameSize.y));
+
+		FrameType[] frameTypes = GetFrameTypeData();
+
+		// draw currently selected box
+		if (!isPlaying) {
+			int editingFrameIndex = 0;
+			for (int i = 0; i < editingFrame; i++)
+				editingFrameIndex += animData.frames[i].frameDuration;
+			editingFrameIndex *= animData.simulationFrameDuration;
+			
+			Vector2 size = new Vector2(animData.frames[editingFrame].frameDuration * animData.simulationFrameDuration * (frameSize.x + spacing) - spacing, 2f);
+			
+			GUI.DrawTexture(new Rect(frameDataRect.position + new Vector2((spacing + frameSize.x) * editingFrameIndex, frameSize.y + 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, Color.gray, 0, 0);
+		} else {
+			Vector2 size = new Vector2(frameSize.x, 2f);
+			
+			GUI.DrawTexture(new Rect(frameDataRect.position + new Vector2((spacing + frameSize.x) * playingFrame, frameSize.y + 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, Color.white, 0, 0);
 		}
+
+		// draw each box
+		for (int i = 0; i < frameTypes.Length; i++) {
+			Color colour = frameTypes[i]
+			switch {
+				FrameType.Active => activeFrameColour,
+					FrameType.Recovery => recoveryFrameColour,
+					FrameType.Startup => startupFrameColour,
+					_ => noActiveFramesColour
+			};
+			GUI.DrawTexture(new Rect(frameDataRect.position + Vector2.right * ((spacing + frameSize.x) * i), frameSize), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, frameSize.x / frameSize.y, colour, 0, 0);
+		}
+		
+		GUIStyle labelStyle = new GUIStyle(EditorStyles.label);
+		labelStyle.richText = true;
+
+		if (frameTypes[0] != FrameType.None) {
+			int startupFrames = 0;
+			int activeFrames = 0;
+			int recoveryFrames = 0;
+			for (int i = 0; i < frameTypes.Length; i++) {
+				if (frameTypes[i] == FrameType.Startup)
+					startupFrames++;
+				else if (frameTypes[i] == FrameType.Active)
+					activeFrames++;
+				else if (frameTypes[i] == FrameType.Recovery)
+					recoveryFrames++;
+			}
+
+			EditorGUILayout.LabelField($"Startup: <color=white>{startupFrames}</color>", labelStyle);
+			EditorGUILayout.LabelField($"Active: <color=white>{activeFrames}</color>", labelStyle);
+			EditorGUILayout.LabelField($"Recovery: <color=white>{recoveryFrames}</color>", labelStyle);
+		}
+
+		EditorGUILayout.LabelField($"<b>Total: <color=white>{frameTypes.Length}</color></b>", labelStyle);
+	}
+
+	private FrameType[] GetFrameTypeData() {
+		FrameType[] frameTypes = new FrameType[animData.TotalFrames];
+		bool hasActiveFrames = false;
+		for (int i = 0; i < frameTypes.Length; i++) {
+			bool hasHitBox = animData.GetFrame(i).boxes.Exists(x => x.type == Box.BoxType.Hitbox);
+			if (!hasActiveFrames)
+				hasActiveFrames = hasHitBox;
+			frameTypes[i] = hasHitBox ? FrameType.Active : hasActiveFrames ? FrameType.Recovery : FrameType.Startup;
+		}
+
+		if (!hasActiveFrames)
+			for (int i = 0; i < frameTypes.Length; i++)
+				frameTypes[i] = FrameType.None;
+		return frameTypes;
 	}
 
 	private void DrawPreviewFrame(Rect previewRect, AnimationData.FrameData frameData) {
@@ -174,24 +269,18 @@ public class AnimationEditorWindow : EditorWindow {
 		Rect spriteRect = new Rect(origin - new Vector2(0, spriteSize.y) - new Vector2(pivotOffset.x, -pivotOffset.y) + new Vector2(frameData.spriteOffset.x, -frameData.spriteOffset.y) * PreviewScale, spriteSize);
 		GUI.DrawTexture(spriteRect, frameData.sprite.texture);
 
-		float boxAlpha = isPlaying ? 0.2f : 0.3f;
+		float boxAlpha = isPlaying ? 0.1f : 0.3f;
 
-		Color hurtBoxColour = Color.yellow;
-		hurtBoxColour.a = boxAlpha;
+		DrawBoxes(Box.BoxType.Hitbox, Color.red);
+		DrawBoxes(Box.BoxType.Pushbox, Color.yellow);
+		DrawBoxes(Box.BoxType.HurtBox, Color.green);
 
-		// hurt boxes
-		foreach (Box box in frameData.GetBoxes(Box.BoxType.HurtBox)) {
-			Vector2 size = (Vector2)box.size * PreviewScale;
-			GUI.DrawTexture(new Rect(origin + (new Vector2(box.position.x, -box.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hurtBoxColour, 0, 0);
-		}
-
-		Color hitBoxColour = Color.red;
-		hitBoxColour.a = boxAlpha;
-
-		// hit boxes
-		foreach (Box box in frameData.GetBoxes(Box.BoxType.Hitbox)) {
-			Vector2 size = (Vector2)box.size * PreviewScale;
-			GUI.DrawTexture(new Rect(origin + (new Vector2(box.position.x, -box.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, hitBoxColour, 0, 0);
+		void DrawBoxes(Box.BoxType type, Color colour) {
+			colour.a = boxAlpha;
+			foreach (Box box in frameData.GetBoxes(type)) {
+				Vector2 size = (Vector2)box.size * PreviewScale;
+				GUI.DrawTexture(new Rect(origin + (new Vector2(box.position.x, -box.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, colour, 0, 0);
+			}
 		}
 	}
 }

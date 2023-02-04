@@ -70,7 +70,8 @@ public class Simulation : MonoBehaviour {
 		entities.Clear();
 		CreateEntity(player1EntityData, isLocalPlayer1 ? 1 : 2);
 		CreateEntity(player2EntityData, isLocalPlayer1 ? 2 : 1);
-
+		
+		// set players apart from each other
 		Entity player1 = entities[0];
 		Entity player2 = entities[1];
 		player1.position.Set(-startSeparationDistance, 0);

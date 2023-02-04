@@ -9,11 +9,11 @@ public struct Box {
 		Pushbox
 	}
 
+	public BoxType type;
 	[HideInInspector]
 	public int ownerEntityHash;
 	public Vector2Int position;
 	public Vector2Int size;
-	public BoxType type;
 
 	public bool OverlapAnyBoxes(IList<Box> boxes) {
 		foreach (Box hurtBox in boxes)

@@ -51,7 +51,7 @@ public class AnimationData : ScriptableObject, INameableElement {
 
 		for (int i = 0; i < frames.Count; i++) {
 			int unscaledFrameDuration = frames[i].frameDuration * simulationFrameDuration;
-			if (frame <= unscaledFrameDuration)
+			if (frame < unscaledFrameDuration)
 				return frames[i];
 			frame -= unscaledFrameDuration;
 		}
