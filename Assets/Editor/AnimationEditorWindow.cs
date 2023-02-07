@@ -75,10 +75,9 @@ public class AnimationEditorWindow : EditorWindow {
 			GUILayout.Label($"{animData.name} (duration: {animationDuration.ToString("0.##")}s)");
 			if (Selection.activeObject != animData && EditorGUILayout.LinkButton($"select"))
 				Selection.SetActiveObjectWithContext(animData, null);
-			// EditorGUILayout.Separator();
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("Zoom");
-			rawPreviewScale = EditorGUILayout.Slider(rawPreviewScale, 1, 4, GUILayout.MinWidth(105), GUILayout.MaxWidth(200));
+			rawPreviewScale = EditorGUILayout.Slider(rawPreviewScale, 1, 10, GUILayout.MinWidth(105), GUILayout.MaxWidth(200));
 			EditorGUILayout.EndHorizontal();
 
 			// preview area
@@ -135,7 +134,10 @@ public class AnimationEditorWindow : EditorWindow {
 		EditorGUI.EndDisabledGroup();
 
 		if (isPlaying) {
+			int prevPlayingFrame = playingFrame;
 			playingFrame = ((int)((Time.realtimeSinceStartup - timeStartedPlaying) * Simulation.FrameRate)) % animData.TotalFrames;
+			if (prevPlayingFrame > playingFrame && !animData.loop)
+				isPlaying = false;
 		}
 
 		// Prev/Next buttons and frame counter

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dca8264a7ee42d5b8c0feb21b15c64, type: 3}
+  m_Name: Jump Rise
+  m_EditorClassIdentifier: 
+  loop: 1
+  simulationFrameDuration: 2
+  frames:
+  - sprite: {fileID: 21300000, guid: a49332591293c45aa8afd43580403344, type: 3}
+    frameDuration: 1
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    pushBox:
+      ownerEntityHash: 0
+      position: {x: 0, y: 64}
+      size: {x: 32, y: 128}
+    hitBoxes: []
+    hurtBoxes: []
+    frameCommands: []
+  transitionableAnimations: []

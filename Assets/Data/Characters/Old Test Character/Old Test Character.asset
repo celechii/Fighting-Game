@@ -10,25 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3c6621456d5fb41788ed7f4d432ba991, type: 3}
-  m_Name: Test Character
+  m_Name: Old Test Character
   m_EditorClassIdentifier: 
-  type: 0
-  customData:
-  - variable: 0
-    value: 0
-    isBoolean: 0
-  - variable: 1
-    value: 100
-    isBoolean: 0
-  - variable: 2
-    value: 0
-    isBoolean: 0
-  - variable: 3
-    value: 0
-    isBoolean: 0
-  - variable: 4
-    value: 0
-    isBoolean: 1
+  customData: []
   initialAnimation: {fileID: 0}
   displayName: 
   groundSpeed: 10

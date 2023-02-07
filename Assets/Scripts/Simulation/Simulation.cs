@@ -274,7 +274,7 @@ public class Simulation : MonoBehaviour {
 					else
 						ApplyOffset(indexA, xOverlap * velocitySign);
 
-					Debug.LogWarning("uh oh");
+					Debug.LogWarning("uh oh"); // you dont know if/how this works yet, enjoy :)
 				}
 			}
 		}

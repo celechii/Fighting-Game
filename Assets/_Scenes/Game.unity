@@ -161,9 +161,10 @@ MonoBehaviour:
   inputBufferFrames: 3
   maxRollbackFrames: 100
   simulationScale: 128
+  pushBoxSoftReject: 1
   pushBoxRejectDistance: 10
-  startSeparationDistance: 500
   isLocalPlayer1: 1
+  startSeparationDistance: 500
   entityManager: {fileID: 944778735}
   player1EntityData: {fileID: 11400000, guid: 4b7f93a1ed481483db2e889fbfa40b4b, type: 2}
   player2EntityData: {fileID: 11400000, guid: 4b7f93a1ed481483db2e889fbfa40b4b, type: 2}
