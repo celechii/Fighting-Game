@@ -6,6 +6,7 @@ public class EntityData : ScriptableObject {
 	
 	public int Hash => ObjectRef.GetHash(this);
 
+	public EntityType type;
 	[NameElements]
 	public CustomData[] customData;
 	public AnimationData initialAnimation;

@@ -1,5 +1,5 @@
-using UnityEngine;
 using NaughtyAttributes;
+using UnityEngine;
 
 [System.Serializable]
 public struct Entity {
@@ -9,6 +9,7 @@ public struct Entity {
 
 	public int playerOwner; // 0 for no owner, 1 for player 1, 2 for player 2
 	public int entityHash;
+	public EntityType type;
 	public int animationHash;
 	public int animationFrame;
 	public Vector2Int position;
@@ -19,6 +20,7 @@ public struct Entity {
 		ID = entityID;
 		entityID++;
 
+		type = entityData.type;
 		this.playerOwner = playerOwner;
 		this.entityHash = ObjectRef.GetHash(entityData);
 		this.animationHash = ObjectRef.GetHash(entityData.initialAnimation);
@@ -49,4 +51,11 @@ public struct Entity {
 	public void NextAnimationFrame() {
 		animationFrame = ObjectRef.GetObject<AnimationData>(animationHash).GetNextFrameIndex(animationFrame);
 	}
+}
+
+public enum EntityType {
+	Player,
+	Projectile,
+	Effect,
+	Utility
 }

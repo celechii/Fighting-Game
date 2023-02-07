@@ -36,10 +36,10 @@ public class AnimationData : ScriptableObject, INameableElement {
 			total += frames[i].frameDuration;
 		return total * simulationFrameDuration;
 	}
-	
+
 	[ContextMenu("Update Frame Duration")]
 	public void UpdateTotalFrameDuration() => totalFrames = CalculateTotalFrameDuration();
-	
+
 	/// <summary>
 	/// Get the frame data at the simulation frame index.
 	/// </summary>
@@ -58,7 +58,7 @@ public class AnimationData : ScriptableObject, INameableElement {
 
 		throw new System.IndexOutOfRangeException($"There is no frame {frame} for animation {name}!");
 	}
-	
+
 	/// <summary>
 	/// Returns the next frame index, taking looping or clamping into account.
 	/// </summary>
@@ -70,7 +70,7 @@ public class AnimationData : ScriptableObject, INameableElement {
 			else
 				currentFrameIndex--;
 		}
-		
+
 		return currentFrameIndex;
 	}
 
@@ -85,7 +85,9 @@ public class AnimationData : ScriptableObject, INameableElement {
 		public int frameDuration;
 		public Vector2Int spriteOffset;
 		public FrameFlags frameFlags;
-		public List<Box> boxes;
+		public Box pushBox;
+		public List<Box> hitBoxes;
+		public List<Box> hurtBoxes;
 		public List<FrameCommand> frameCommands;
 
 		public bool TryGetFrameCommand<T>(out T command)where T : FrameCommand {
@@ -96,8 +98,5 @@ public class AnimationData : ScriptableObject, INameableElement {
 		}
 
 		public string GetArrayElementName(int index) => $"Frame {index + 1}";
-
-		public List<Box> GetBoxes(Box.BoxType type) => boxes.FindAll(x => x.type == type);
-
 	}
 }

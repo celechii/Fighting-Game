@@ -182,6 +182,8 @@ public class AnimationEditorWindow : EditorWindow {
 		Rect frameDataRect = GUILayoutUtility.GetRect(GUIContent.none, bottomCenterImageStyle, GUILayout.ExpandWidth(true), GUILayout.MaxHeight(frameSize.y));
 
 		FrameType[] frameTypes = GetFrameTypeData();
+		if (frameTypes == null)
+			return;
 
 		// draw currently selected box
 		if (!isPlaying) {
@@ -189,13 +191,13 @@ public class AnimationEditorWindow : EditorWindow {
 			for (int i = 0; i < editingFrame; i++)
 				editingFrameIndex += animData.frames[i].frameDuration;
 			editingFrameIndex *= animData.simulationFrameDuration;
-			
+
 			Vector2 size = new Vector2(animData.frames[editingFrame].frameDuration * animData.simulationFrameDuration * (frameSize.x + spacing) - spacing, 2f);
-			
+
 			GUI.DrawTexture(new Rect(frameDataRect.position + new Vector2((spacing + frameSize.x) * editingFrameIndex, frameSize.y + 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, Color.gray, 0, 0);
 		} else {
 			Vector2 size = new Vector2(frameSize.x, 2f);
-			
+
 			GUI.DrawTexture(new Rect(frameDataRect.position + new Vector2((spacing + frameSize.x) * playingFrame, frameSize.y + 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, Color.white, 0, 0);
 		}
 
@@ -210,7 +212,7 @@ public class AnimationEditorWindow : EditorWindow {
 			};
 			GUI.DrawTexture(new Rect(frameDataRect.position + Vector2.right * ((spacing + frameSize.x) * i), frameSize), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, frameSize.x / frameSize.y, colour, 0, 0);
 		}
-		
+
 		GUIStyle labelStyle = new GUIStyle(EditorStyles.label);
 		labelStyle.richText = true;
 
@@ -237,9 +239,11 @@ public class AnimationEditorWindow : EditorWindow {
 
 	private FrameType[] GetFrameTypeData() {
 		FrameType[] frameTypes = new FrameType[animData.TotalFrames];
+		if (frameTypes.Length == 0)
+			return null;
 		bool hasActiveFrames = false;
 		for (int i = 0; i < frameTypes.Length; i++) {
-			bool hasHitBox = animData.GetFrame(i).boxes.Exists(x => x.type == Box.BoxType.Hitbox);
+			bool hasHitBox = animData.GetFrame(i).hitBoxes.Count > 0;
 			if (!hasActiveFrames)
 				hasActiveFrames = hasHitBox;
 			frameTypes[i] = hasHitBox ? FrameType.Active : hasActiveFrames ? FrameType.Recovery : FrameType.Startup;
@@ -271,16 +275,17 @@ public class AnimationEditorWindow : EditorWindow {
 
 		float boxAlpha = isPlaying ? 0.1f : 0.3f;
 
-		DrawBoxes(Box.BoxType.Hitbox, Color.red);
-		DrawBoxes(Box.BoxType.Pushbox, Color.yellow);
-		DrawBoxes(Box.BoxType.HurtBox, Color.green);
+		// push box
+		DrawBox(frameData.pushBox, Color.yellow);
+		foreach(Box box in frameData.hurtBoxes)
+			DrawBox(box, Color.green);
+		foreach(Box box in frameData.hitBoxes)
+			DrawBox(box, Color.red);
 
-		void DrawBoxes(Box.BoxType type, Color colour) {
+		void DrawBox(Box box, Color colour) {
 			colour.a = boxAlpha;
-			foreach (Box box in frameData.GetBoxes(type)) {
-				Vector2 size = (Vector2)box.size * PreviewScale;
-				GUI.DrawTexture(new Rect(origin + (new Vector2(box.position.x, -box.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, colour, 0, 0);
-			}
+			Vector2 size = (Vector2)box.size * PreviewScale;
+			GUI.DrawTexture(new Rect(origin + (new Vector2(box.position.x, -box.position.y) * PreviewScale) - (size / 2f), size), EditorGUIUtility.whiteTexture, ScaleMode.StretchToFill, true, size.x / size.y, colour, 0, 0);
 		}
 	}
 }

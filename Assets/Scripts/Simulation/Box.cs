@@ -3,13 +3,6 @@ using System.Collections.Generic;
 
 [System.Serializable]
 public struct Box {
-	public enum BoxType {
-		Hitbox,
-		HurtBox,
-		Pushbox
-	}
-
-	public BoxType type;
 	[HideInInspector]
 	public int ownerEntityHash;
 	public Vector2Int position;

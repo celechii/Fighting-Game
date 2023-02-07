@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e56a365c5ece4b3e830b8c92f4e4cc8, type: 3}
   m_Name: Fireball
   m_EditorClassIdentifier: 
+  type: 1
   customData: []
   initialAnimation: {fileID: 0}

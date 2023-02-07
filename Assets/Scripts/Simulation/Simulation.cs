@@ -14,6 +14,7 @@ public class Simulation : MonoBehaviour {
 	public Input CurrentRemoteInput => RemoteInputHistory[CurrentFrame];
 	public Input PrevRemoteInput => RemoteInputHistory[Mathf.Max(0, CurrentFrame - 1)];
 
+	[Header("Simulation")]
 	public bool FrameByFrame;
 	[Tooltip("How many frames should pass before the input should be processed?")]
 	[SerializeField]
@@ -23,12 +24,22 @@ public class Simulation : MonoBehaviour {
 	private int maxRollbackFrames = 10;
 	[Tooltip("This is how many simulation units there are in 1 Unity unit.")]
 	public int simulationScale = 128;
+	
+	[Header("Physics")]
+	[Tooltip("How many units push boxes should be moved on frames where one isn't grounded.")]
+	[SerializeField]
+	private bool pushBoxSoftReject = true;
+	[SerializeField]
+	private int pushBoxRejectDistance = 3;
+
+	[Header("Game")]
+	public bool isLocalPlayer1 = true;
 	[SerializeField]
 	private int startSeparationDistance;
-	[Space]
+
+	[Header("References")]
 	[SerializeField]
 	private EntityManager entityManager;
-	public bool isLocalPlayer1 = true;
 
 	[ShowNativeProperty]
 	public int CurrentFrame { get; private set; } = 0;
@@ -43,6 +54,7 @@ public class Simulation : MonoBehaviour {
 
 	private List<Entity> entities = new();
 
+	private static List<int> editEntityIndexList = new();
 	private InputCheck inputCheck;
 	private GameStateHistory stateHistory;
 	private bool isRunning;
@@ -70,7 +82,7 @@ public class Simulation : MonoBehaviour {
 		entities.Clear();
 		CreateEntity(player1EntityData, isLocalPlayer1 ? 1 : 2);
 		CreateEntity(player2EntityData, isLocalPlayer1 ? 2 : 1);
-		
+
 		// set players apart from each other
 		Entity player1 = entities[0];
 		Entity player2 = entities[1];
@@ -149,7 +161,7 @@ public class Simulation : MonoBehaviour {
 			LocalInputHistory.Add(new());
 		while (RemoteInputHistory.Count <= TargetFrame + inputBufferFrames)
 			RemoteInputHistory.Add(new());
-		
+
 		// from the next frame until the target frame, add current input
 		for (int i = CurrentFrame + 1; i <= TargetFrame; i++)
 			LocalInputHistory[i + inputBufferFrames] = inputCheck.Current;
@@ -181,6 +193,106 @@ public class Simulation : MonoBehaviour {
 		ProcessHurtBoxes();
 		UpdateEntityBehaviours();
 		UpdateEntityAnimations();
+		ProcessPushBoxes();
+	}
+
+	private void ProcessPushBoxes() {
+		// right now this is just for players
+		entities.FindIndexes(editEntityIndexList, x => x.type == EntityType.Player);
+
+		// clamp above the ground
+		for (int i = 0; i < editEntityIndexList.Count; i++) {
+			Entity entity = entities[editEntityIndexList[i]];
+			AnimationData.FrameData frameData = entity.GetCurrentFrameData();
+			int pushBoxHeight = frameData.pushBox.position.y - (frameData.pushBox.size.y / 2);
+
+			if (pushBoxHeight < 0) {
+				entity.position.y -= pushBoxHeight;
+				entities[editEntityIndexList[i]] = entity;
+			}
+
+			// remove entity from edit list
+			if (frameData.frameFlags.Has(FrameFlags.NoPushBoxCollision)) {
+				editEntityIndexList.RemoveAt(i);
+				i--;
+			}
+		}
+
+		// push boxes if they're overlapping
+		if (editEntityIndexList.Count == 0)
+			return;
+
+		Dictionary<int, int> offsets = new();
+
+		// check overlaps and calculate offsets
+		for (int i = 1; i < editEntityIndexList.Count; i++) {
+			int indexA = editEntityIndexList[i - 1];
+			Entity entityA = entities[indexA];
+			Box boxA = entityA.GetCurrentFrameData().pushBox;
+			boxA.position += entityA.position;
+			bool aGrounded = boxA.position.y - (boxA.size.y / 2) == 0;
+
+			int indexB = editEntityIndexList[i];
+			Entity entityB = entities[indexB];
+			Box boxB = entityB.GetCurrentFrameData().pushBox;
+			boxB.position += entityB.position;
+			bool bGrounded = boxB.position.y - (boxB.size.y / 2) == 0;
+
+			if (boxA.OverlapBox(boxB)) {
+				int xOverlap = Mathf.Abs((Mathf.Abs((boxA.position.x - boxB.position.x) * 2) - (boxA.size.x + boxB.size.x)) / 2);
+				int direction = (int)Mathf.Sign(entityA.position.x - entityB.position.x);
+				int totalVel = Mathf.Abs(entityA.velocity.x) + Mathf.Abs(entityB.velocity.x);
+
+				if (aGrounded != bGrounded && pushBoxSoftReject) {
+					// if one's in the air and the other isn't
+					int rejectMinDistance = Mathf.Min(xOverlap, pushBoxRejectDistance);
+					int rejectMaxDistance = xOverlap;
+					if (!aGrounded) {
+						ApplyOffset(indexA, rejectMinDistance * direction);
+					} else {
+						ApplyOffset(indexB, rejectMinDistance * -direction);
+					}
+				} else if (totalVel == 0) {
+					// if neither are moving
+					int aOffset = xOverlap / 2;
+					ApplyOffset(indexA, aOffset * direction);
+					ApplyOffset(indexB, (xOverlap - aOffset) * -direction);
+
+				} else if (Mathf.Sign(entityA.velocity.x) != Mathf.Sign(entityB.velocity.x) || entityA.velocity.x == 0 || entityB.velocity.x == 0) {
+					// if running into each other, calculate offset
+					int offsetA = CalculateOffset(entityA.velocity.x, totalVel, xOverlap);
+					int offsetB = CalculateOffset(entityB.velocity.x, totalVel, xOverlap);
+
+					ApplyOffset(indexA, offsetA * direction);
+					ApplyOffset(indexB, offsetB * -direction);
+
+				} else {
+					// if one's backing up
+					int velocitySign = (int)Mathf.Sign(entityA.velocity.x);
+					if (Mathf.Sign(entityA.position.x - entityB.position.x) == velocitySign)
+						ApplyOffset(indexB, xOverlap * velocitySign);
+					else
+						ApplyOffset(indexA, xOverlap * velocitySign);
+
+					Debug.LogWarning("uh oh");
+				}
+			}
+		}
+
+		// apply offsets
+		foreach (KeyValuePair<int, int> kvp in offsets) {
+			Entity entity = entities[kvp.Key];
+			entity.position.x += kvp.Value;
+			entities[kvp.Key] = entity;
+		}
+
+		void ApplyOffset(int entityIndex, int xOffset) {
+			if (!offsets.ContainsKey(entityIndex))
+				offsets.Add(entityIndex, 0);
+			offsets[entityIndex] += xOffset;
+		}
+
+		int CalculateOffset(int vel, int totalVel, int overlap) => (((overlap * 2) - ((overlap * (int)Mathf.Abs(vel) * 2) / totalVel)) / 2);
 	}
 
 	private void ProcessHurtBoxes() {
@@ -212,18 +324,17 @@ public class Simulation : MonoBehaviour {
 
 		void GenerateOverlaps(List<Entity> hurtBoxEntities, List<Entity> hitBoxEntities) {
 			foreach (Entity entityToBeHit in hurtBoxEntities) {
-				List<Box> hurtBoxes = entityToBeHit.GetCurrentFrameData().GetBoxes(Box.BoxType.HurtBox);
-				
-				
+				List<Box> hurtBoxes = entityToBeHit.GetCurrentFrameData().hurtBoxes;
+
 				foreach (Box hurtBox in hurtBoxes) {
-					
+
 					foreach (Entity hitBoxEntity in hitBoxEntities) {
 						AnimationData.FrameData hitBoxFrameData = hitBoxEntity.GetCurrentFrameData();
 						DamageCommand damage;
 						if (!hitBoxFrameData.TryGetFrameCommand(out damage))
 							continue;
 
-						if (hurtBox.OverlapAnyBoxes(hitBoxFrameData.GetBoxes(Box.BoxType.Hitbox))) {
+						if (hurtBox.OverlapAnyBoxes(hitBoxFrameData.hitBoxes)) {
 							if (!hitBoxOverlaps.ContainsKey(entityToBeHit.ID))
 								hitBoxOverlaps.Add(entityToBeHit.ID, new());
 							hitBoxOverlaps[entityToBeHit.ID].Add(new HitData(entityToBeHit.ID, damage, hitBoxEntity.isFacingRight));

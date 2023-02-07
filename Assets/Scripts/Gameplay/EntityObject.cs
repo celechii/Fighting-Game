@@ -39,21 +39,27 @@ public class EntityObject : MonoBehaviour {
 		Gizmos.DrawRay(transform.localPosition, Vector2.right * lineLength);
 
 		// draw hitboxes/hurtboxes		
-		Color hurtboxColour = Color.yellow;
-		Color hitboxColour = Color.red;
-		hurtboxColour.a = 0.2f;
-		hitboxColour.a = 0.2f;
+		Color pushBoxColour = Color.yellow;
+		Color hurtBoxColour = Color.green;
+		Color hitBoxColour = Color.red;
+		pushBoxColour.a = 0.2f;
+		hurtBoxColour.a = 0.2f;
+		hitBoxColour.a = 0.2f;
 
 		AnimationData.FrameData currentAnimFrame = latestEntity.GetCurrentFrameData();
 
 		// draw hurtboxes
-		Gizmos.color = hurtboxColour;
-		foreach (Box hurtbox in currentAnimFrame.GetBoxes(Box.BoxType.HurtBox))
-			Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredBox(hurtbox).position), Simulation.Instance.GetWorldVector(hurtbox.size));
+		Gizmos.color = pushBoxColour;
+		Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredBox(currentAnimFrame.pushBox).position), Simulation.Instance.GetWorldVector(currentAnimFrame.pushBox.size));
+			
+		// draw hurtboxes
+		Gizmos.color = hurtBoxColour;
+		foreach (Box hurtBox in currentAnimFrame.hurtBoxes)
+			Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredBox(hurtBox).position), Simulation.Instance.GetWorldVector(hurtBox.size));
 
 		// draw hitboxes
-		Gizmos.color = hitboxColour;
-		foreach (Box hitbox in currentAnimFrame.GetBoxes(Box.BoxType.Hitbox))
-			Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredBox(hitbox).position), Simulation.Instance.GetWorldVector(hitbox.size));
+		Gizmos.color = hitBoxColour;
+		foreach (Box hitBox in currentAnimFrame.hitBoxes)
+			Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredBox(hitBox).position), Simulation.Instance.GetWorldVector(hitBox.size));
 	}
 }

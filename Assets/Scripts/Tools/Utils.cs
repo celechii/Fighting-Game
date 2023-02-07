@@ -912,6 +912,13 @@ public static class Utils {
 		list.Remove(element);
 		list.Insert(newIndex, element);
 	}
+	
+	public static void FindIndexes<T>(this List<T> list, List<int> listToPopulate, Predicate<T> match) {
+		listToPopulate.Clear();
+		for (int i = 0; i < list.Count; i++)
+			if (match.Invoke(list[i]))
+				listToPopulate.Add(i);
+	}
 
 	#endregion
 

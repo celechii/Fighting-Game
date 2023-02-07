@@ -12,27 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79dca8264a7ee42d5b8c0feb21b15c64, type: 3}
   m_Name: Fisher Idle
   m_EditorClassIdentifier: 
-  loop: 0
+  loop: 1
   simulationFrameDuration: 4
   frames:
   - sprite: {fileID: 21300000, guid: 4557571067eaf4474a5008c0d7b9cbc3, type: 3}
     frameDuration: 1
     spriteOffset: {x: 0, y: 0}
     frameFlags: 0
+    pushBox:
+      ownerEntityHash: 0
+      position: {x: 0, y: 270}
+      size: {x: 200, y: 540}
     hitBoxes: []
-    hurtBoxes:
-    - ownerEntityHash: 0
-      position: {x: 0, y: 280}
-      size: {x: 240, y: 560}
-    frameCommands: []
-  - sprite: {fileID: 21300000, guid: 4557571067eaf4474a5008c0d7b9cbc3, type: 3}
-    frameDuration: 1
-    spriteOffset: {x: 0, y: 0}
-    frameFlags: 0
-    hitBoxes: []
-    hurtBoxes:
-    - ownerEntityHash: 0
-      position: {x: 0, y: 280}
-      size: {x: 240, y: 560}
+    hurtBoxes: []
     frameCommands: []
   transitionableAnimations: []
