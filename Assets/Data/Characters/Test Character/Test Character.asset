@@ -29,19 +29,19 @@ MonoBehaviour:
   - variable: 4
     value: 0
     isBoolean: 1
-  initialAnimation: {fileID: 0}
-  displayName: 
-  groundSpeed: 10
-  groundAccel: 1
-  groundDecel: 1
-  airAccel: 1
-  airDecel: 1
-  jumpForce: 0
-  jumpDecel: 0
-  fallAccel: 0
-  jumpBufferFrames: 0
-  idleAnim: {fileID: 0}
-  runAnim: {fileID: 0}
-  jumpAnim: {fileID: 0}
-  airPeakAnim: {fileID: 0}
-  airFallAnim: {fileID: 0}
+  initialAnimation: {fileID: 11400000, guid: c419d80959b6e4e02ad38c1a5e6b0f23, type: 2}
+  displayName: Test Character
+  groundSpeed: 20
+  groundAccel: 8
+  groundDecel: 7
+  airAccel: 6
+  airDecel: 2
+  jumpForce: 70
+  jumpDecel: 4
+  fallAccel: 7
+  jumpBufferFrames: 10
+  idleAnim: {fileID: 11400000, guid: c419d80959b6e4e02ad38c1a5e6b0f23, type: 2}
+  runAnim: {fileID: 11400000, guid: 7cc7662a9211e43a2a0e1cb7264599d3, type: 2}
+  jumpAnim: {fileID: 11400000, guid: 0f591a2dd71c2410ba02fbcb2117d29e, type: 2}
+  airPeakAnim: {fileID: 11400000, guid: b16874e8279284060b0c5262cd38fb02, type: 2}
+  airFallAnim: {fileID: 11400000, guid: 6eaba510af9e3488cb468cfb8800505f, type: 2}

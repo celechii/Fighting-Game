@@ -21,8 +21,8 @@ MonoBehaviour:
     frameFlags: 0
     pushBox:
       ownerEntityHash: 0
-      position: {x: 0, y: 64}
-      size: {x: 32, y: 128}
+      position: {x: 0, y: 128}
+      size: {x: 64, y: 256}
     hitBoxes: []
     hurtBoxes: []
     frameCommands: []
@@ -32,8 +32,8 @@ MonoBehaviour:
     frameFlags: 0
     pushBox:
       ownerEntityHash: 0
-      position: {x: 0, y: 64}
-      size: {x: 32, y: 128}
+      position: {x: 0, y: 128}
+      size: {x: 64, y: 256}
     hitBoxes: []
     hurtBoxes: []
     frameCommands: []

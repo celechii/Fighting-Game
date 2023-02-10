@@ -21,13 +21,13 @@ MonoBehaviour:
     frameFlags: 0
     pushBox:
       ownerEntityHash: 0
-      position: {x: 0, y: 64}
-      size: {x: 32, y: 128}
+      position: {x: 0, y: 128}
+      size: {x: 64, y: 256}
     hitBoxes: []
     hurtBoxes:
     - ownerEntityHash: 0
-      position: {x: 0, y: 64}
-      size: {x: 48, y: 128}
+      position: {x: 0, y: 128}
+      size: {x: 96, y: 256}
     frameCommands: []
   - sprite: {fileID: 21300000, guid: 2d7d096bc90bc4962a86d080c6587576, type: 3}
     frameDuration: 2
@@ -35,22 +35,22 @@ MonoBehaviour:
     frameFlags: 0
     pushBox:
       ownerEntityHash: 0
-      position: {x: 0, y: 64}
-      size: {x: 32, y: 128}
+      position: {x: 0, y: 128}
+      size: {x: 64, y: 256}
     hitBoxes:
     - ownerEntityHash: 0
-      position: {x: 40, y: 88}
-      size: {x: 64, y: 32}
+      position: {x: 80, y: 176}
+      size: {x: 128, y: 64}
     hurtBoxes:
     - ownerEntityHash: 0
-      position: {x: 4, y: 32}
-      size: {x: 56, y: 64}
+      position: {x: 8, y: 64}
+      size: {x: 112, y: 128}
     - ownerEntityHash: 0
-      position: {x: 16, y: 96}
-      size: {x: 32, y: 64}
+      position: {x: 32, y: 192}
+      size: {x: 64, y: 128}
     - ownerEntityHash: 0
-      position: {x: 40, y: 88}
-      size: {x: 48, y: 24}
+      position: {x: 80, y: 176}
+      size: {x: 96, y: 48}
     frameCommands: []
   - sprite: {fileID: 21300000, guid: 6d6748219bf244173a146e90be7a21b6, type: 3}
     frameDuration: 5
@@ -58,18 +58,18 @@ MonoBehaviour:
     frameFlags: 0
     pushBox:
       ownerEntityHash: 0
-      position: {x: 0, y: 64}
-      size: {x: 32, y: 128}
+      position: {x: 0, y: 128}
+      size: {x: 64, y: 256}
     hitBoxes: []
     hurtBoxes:
     - ownerEntityHash: 0
-      position: {x: 4, y: 32}
-      size: {x: 56, y: 64}
+      position: {x: 8, y: 64}
+      size: {x: 112, y: 128}
     - ownerEntityHash: 0
-      position: {x: 16, y: 96}
-      size: {x: 32, y: 64}
+      position: {x: 32, y: 192}
+      size: {x: 64, y: 128}
     - ownerEntityHash: 0
-      position: {x: 44, y: 92}
-      size: {x: 24, y: 24}
+      position: {x: 88, y: 184}
+      size: {x: 48, y: 48}
     frameCommands: []
   transitionableAnimations: []
