@@ -23,6 +23,12 @@ public class EntityObject : MonoBehaviour {
 		spriteRenderer.flipX = !entity.isFacingRight;
 		entityTrans.localPosition = Simulation.Instance.GetWorldVector(entity.position + currentFrame.spriteOffset);
 
+		BoxVisualizer.RegisterPushBox(entity.GetMirroredBox(currentFrame.pushBox), entity.position);
+		for (int i = 0; i < currentFrame.hitBoxes.Count; i++)
+			BoxVisualizer.RegisterHitBox(entity.GetMirroredBox(currentFrame.hitBoxes[i]), entity.position);
+		for (int i = 0; i < currentFrame.hurtBoxes.Count; i++)
+			BoxVisualizer.RegisterHurtBox(entity.GetMirroredBox(currentFrame.hurtBoxes[i]), entity.position);
+
 		#if UNITY_EDITOR
 		latestEntity = entity;
 		gameObject.name = $"{ObjectRef.GetObject<ScriptableObject>(entity.entityHash).name} ({entity.ID})";
@@ -51,7 +57,7 @@ public class EntityObject : MonoBehaviour {
 		// draw hurtboxes
 		Gizmos.color = pushBoxColour;
 		Gizmos.DrawCube(Simulation.Instance.GetWorldVector(latestEntity.position + latestEntity.GetMirroredBox(currentAnimFrame.pushBox).position), Simulation.Instance.GetWorldVector(currentAnimFrame.pushBox.size));
-			
+
 		// draw hurtboxes
 		Gizmos.color = hurtBoxColour;
 		foreach (Box hurtBox in currentAnimFrame.hurtBoxes)
