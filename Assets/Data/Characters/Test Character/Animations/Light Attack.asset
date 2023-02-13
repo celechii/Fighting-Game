@@ -72,4 +72,12 @@ MonoBehaviour:
       position: {x: 88, y: 184}
       size: {x: 48, y: 48}
     frameCommands: []
-  transitionableAnimations: []
+  cancelData:
+  - cancelableAnimations:
+    - {fileID: 11400000}
+    cancelable: 1
+    cancelFrame: 8
+  - cancelableAnimations:
+    - {fileID: 11400000, guid: 0f591a2dd71c2410ba02fbcb2117d29e, type: 2}
+    cancelable: 1
+    cancelFrame: 0

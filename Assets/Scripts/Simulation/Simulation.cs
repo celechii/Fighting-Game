@@ -5,6 +5,7 @@ using UnityEngine;
 public class Simulation : MonoBehaviour {
 	public static Simulation Instance { get; private set; }
 	public const int FrameRate = 60;
+	public const int InputBufferFrameCount = 10;
 
 	public List<Input> LocalInputHistory = new(FrameRate * 60 * 10); // 10 minutes of initial input history
 	public List<Input> RemoteInputHistory = new(FrameRate * 60 * 10); // 10 minutes of initial input history
@@ -204,7 +205,7 @@ public class Simulation : MonoBehaviour {
 		for (int i = 0; i < editEntityIndexList.Count; i++) {
 			Entity entity = entities[editEntityIndexList[i]];
 			AnimationData.FrameData frameData = entity.GetCurrentFrameData();
-			int pushBoxHeight = frameData.pushBox.position.y - (frameData.pushBox.size.y / 2);
+			int pushBoxHeight = GetPushBoxHeight(frameData.pushBox);
 
 			if (pushBoxHeight < 0) {
 				entity.position.y -= pushBoxHeight;
@@ -356,6 +357,9 @@ public class Simulation : MonoBehaviour {
 		foreach (Entity entity in entities)
 			entity.NextAnimationFrame();
 	}
+
+	public static bool IsPushBoxGrounded(Box pushBox) => GetPushBoxHeight(pushBox) <= 0;
+	public static int GetPushBoxHeight(Box pushBox) => pushBox.position.y - (pushBox.size.y / 2);
 
 	private void OnGUI() {
 		GUIStyle textStyle = new GUIStyle(GUI.skin.label);

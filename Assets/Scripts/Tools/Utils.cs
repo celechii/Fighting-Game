@@ -644,14 +644,27 @@ public static class Utils {
 	/// Inserts spaces in between words of an enum.
 	/// </summary>
 	public static string MakeEnumReadable<TEnum>(this TEnum t)where TEnum : struct, IConvertible {
-		string entry = t.ToString();
-		for (int i = 1; i < entry.Length; i++) {
-			if (entry[i].IsUpper()) {
-				entry = entry.Insert(i, " ");
-				i++;
-			}
+
+		if (typeof(TEnum).IsDefined(typeof(FlagsAttribute), false)) {
+			TEnum[] flags = t.GetArray();
+			string[] flagNames = new string[flags.Length];
+			for (int i = 0; i < flags.Length; i++)
+				flagNames[i] = MakeEnumReadable(flags[i]);
+			return flagNames.ListValues();
 		}
-		return entry;
+		else
+			return MakeEnumReadable(t);
+			
+		string MakeEnumReadable(TEnum singleEnum) {
+			string enumName = singleEnum.ToString();
+			for (int i = 1; i < enumName.Length; i++) {
+				if (enumName[i].IsUpper()) {
+					enumName = enumName.Insert(i, " ");
+					i++;
+				}
+			}
+			return enumName;
+		}
 	}
 
 	#endregion
@@ -912,7 +925,7 @@ public static class Utils {
 		list.Remove(element);
 		list.Insert(newIndex, element);
 	}
-	
+
 	public static void FindIndexes<T>(this List<T> list, List<int> listToPopulate, Predicate<T> match) {
 		listToPopulate.Clear();
 		for (int i = 0; i < list.Count; i++)

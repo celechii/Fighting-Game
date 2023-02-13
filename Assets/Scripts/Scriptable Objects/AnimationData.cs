@@ -15,7 +15,8 @@ public class AnimationData : ScriptableObject, INameableElement {
 	[NameElements]
 	[OnValueChanged(nameof(UpdateTotalFrameDuration))]
 	public List<FrameData> frames = new() { new FrameData() };
-	public Animation[] transitionableAnimations;
+	[NameElements]
+	public CancelData[] cancelData;
 
 	/// <summary>
 	/// The total number of frames as played in the simulation.
@@ -98,5 +99,39 @@ public class AnimationData : ScriptableObject, INameableElement {
 		}
 
 		public string GetArrayElementName(int index) => $"Frame {index + 1}";
+	}
+
+	[System.Serializable]
+	public struct CancelData : INameableElement {
+		private enum Cancelable {
+			Until,
+			At
+		}
+
+		[SerializeField]
+		private List<AnimationData> cancelableAnimations;
+		[SerializeField]
+		private Cancelable cancelable;
+		[SerializeField]
+		private int cancelFrame;
+
+		public bool CanCancelIntoAnimation(AnimationData animation, int currentSimulationFrame) {
+			if (cancelableAnimations.Contains(animation)) {
+				switch (cancelable) {
+					case Cancelable.Until:
+						return currentSimulationFrame <= cancelFrame;
+					case Cancelable.At:
+						return currentSimulationFrame >= cancelFrame;
+				}
+			}
+			return false;
+		}
+
+		public string GetArrayElementName(int index) {
+			string[] animationNames = new string[cancelableAnimations.Count];
+			for (int i = 0; i < animationNames.Length; i++)
+				animationNames[i] = cancelableAnimations[i]?.name ?? "Null";
+			return $"Can Cancel Into {animationNames?.ListValues() ?? "Null"} {cancelable.MakeEnumReadable()} Frame {cancelFrame}";
+		}
 	}
 }
