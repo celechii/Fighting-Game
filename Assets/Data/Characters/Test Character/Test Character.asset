@@ -9,44 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c6621456d5fb41788ed7f4d432ba991, type: 3}
+  m_Script: {fileID: 11500000, guid: 97a41c8dbf098479585606d42b442980, type: 3}
   m_Name: Test Character
   m_EditorClassIdentifier: 
-  type: 0
-  customData:
+  Type: 0
+  allStates: []
+  defaultData:
   - variable: 0
-    value: 0
-    isBoolean: 0
+    defaultValue: 100
+    isBool: 0
   - variable: 1
-    value: 100
-    isBoolean: 0
+    defaultValue: 0
+    isBool: 0
   - variable: 2
-    value: 0
-    isBoolean: 0
-  - variable: 3
-    value: 0
-    isBoolean: 0
-  - variable: 4
-    value: 0
-    isBoolean: 1
-  initialAnimation: {fileID: 11400000, guid: c419d80959b6e4e02ad38c1a5e6b0f23, type: 2}
-  displayName: Test Character
-  groundSpeed: 20
-  groundAccel: 8
-  groundDecel: 7
-  airAccel: 6
-  airDecel: 2
-  jumpForce: 70
-  jumpDecel: 4
-  fallAccel: 7
-  jumpBufferFrames: 10
-  attackCommands:
-  - requiredInput: 0
-    animation: {fileID: 11400000, guid: 26fe93148f1fd4798a34b3078741d263, type: 2}
-  - requiredInput: 0
-    animation: {fileID: 11400000, guid: 0a9ffa09ccace4bfe817f27bb111e602, type: 2}
-  idleAnim: {fileID: 11400000, guid: c419d80959b6e4e02ad38c1a5e6b0f23, type: 2}
-  runAnim: {fileID: 11400000, guid: 7cc7662a9211e43a2a0e1cb7264599d3, type: 2}
-  jumpAnim: {fileID: 11400000, guid: 0f591a2dd71c2410ba02fbcb2117d29e, type: 2}
-  airPeakAnim: {fileID: 11400000, guid: b16874e8279284060b0c5262cd38fb02, type: 2}
-  airFallAnim: {fileID: 11400000, guid: 6eaba510af9e3488cb468cfb8800505f, type: 2}
+    defaultValue: 0
+    isBool: 0

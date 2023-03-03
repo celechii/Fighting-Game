@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
@@ -46,12 +47,13 @@ public class Simulation : MonoBehaviour {
 	public int CurrentFrame { get; private set; } = 0;
 	[ShowNativeProperty]
 	public int TargetFrame { get; private set; } = 0;
-	public Dictionary<int, Dictionary<EntityVar, int>> CustomEntityData = new();
+	public int LatestConfirmedFrame { get; private set; } = 0;
+	public Dictionary<int, Dictionary<int, int>> CustomEntityData = new();
 
 	[SerializeField]
-	private PlayerEntityData player1EntityData;
+	private EntityFSM player1FSM;
 	[SerializeField]
-	private PlayerEntityData player2EntityData;
+	private EntityFSM player2FSM;
 
 	private List<Entity> entities = new();
 
@@ -62,6 +64,8 @@ public class Simulation : MonoBehaviour {
 	private float runtime;
 
 	public Vector2 GetWorldVector(Vector2Int simulationPosition) => (Vector2)simulationPosition / simulationScale;
+	public Input GetCurrentInput(Entity entity) => entity.playerOwner == 1 ? CurrentLocalInput : CurrentRemoteInput;
+	public Input GetPrevInput(Entity entity) => entity.playerOwner == 1 ? PrevLocalInput : PrevRemoteInput;
 
 	private void Awake() {
 		Instance = this;
@@ -81,8 +85,8 @@ public class Simulation : MonoBehaviour {
 		RemoteInputHistory.Clear();
 
 		entities.Clear();
-		CreateEntity(player1EntityData, isLocalPlayer1 ? 1 : 2);
-		CreateEntity(player2EntityData, isLocalPlayer1 ? 2 : 1);
+		CreateEntity(player1FSM, isLocalPlayer1 ? 1 : 2);
+		CreateEntity(player2FSM, isLocalPlayer1 ? 2 : 1);
 
 		// set players apart from each other
 		Entity player1 = entities[0];
@@ -102,24 +106,19 @@ public class Simulation : MonoBehaviour {
 		RenderFrame();
 	}
 
-	public int CreateEntity(EntityData entityData, int playerOwner) {
+	public int CreateEntity(EntityFSM entityFSM, int playerOwner) {
 		// create new entity
-		Entity entity = new Entity(entityData, playerOwner);
+		Entity entity = new Entity(entityFSM, playerOwner);
+		entity = entityFSM.Initialize(entity);
 		entities.Add(entity);
-
-		// start tracking its custom data
-		if (entityData.customData != null) {
-			Dictionary<EntityVar, int> customData = new();
-			foreach (EntityData.CustomData variable in entityData.customData)
-				customData.Add(variable.variable, variable.value);
-			CustomEntityData.Add(entity.ID, customData);
-		}
 
 		return entity.ID;
 	}
 
-	public void SetCustomData(Entity entity, EntityVar variable, bool value) => SetCustomData(entity, variable, value ? 1 : 0);
-	public void SetCustomData(Entity entity, EntityVar variable, int value) {
+	// public void SetCustomData<TEnum>(Entity entity, TEnum variable, bool value) where TEnum : struct, System.IConvertible => SetCustomData(entity, Convert.ToInt32(variable), value);
+	// public void SetCustomData<TEnum>(Entity entity, TEnum variable, int value) where TEnum : struct, System.IConvertible => SetCustomData(entity, Convert.ToInt32(variable), value);
+	// public void SetCustomData(Entity entity, int variable, bool value) => SetCustomData(entity, variable, value ? 1 : 0);
+	public void SetCustomData(Entity entity, int variable, int value) {
 		if (!CustomEntityData[entity.ID].ContainsKey(variable))
 			CustomEntityData[entity.ID].Add(variable, 0);
 		CustomEntityData[entity.ID][variable] = value;
@@ -130,7 +129,8 @@ public class Simulation : MonoBehaviour {
 		CustomEntityData.Remove(entityID);
 	}
 
-	public bool TryGetCustomData(Entity entity, EntityVar variable, out int data) {
+	public bool TryGetCustomData<TEnum>(Entity entity, TEnum variable, out int data) => TryGetCustomData(entity, Convert.ToInt32(variable), out data);
+	public bool TryGetCustomData(Entity entity, int variable, out int data) {
 		data = 0;
 		if (CustomEntityData.ContainsKey(entity.ID) && CustomEntityData[entity.ID].ContainsKey(variable)) {
 			data = CustomEntityData[entity.ID][variable];
@@ -205,10 +205,12 @@ public class Simulation : MonoBehaviour {
 		for (int i = 0; i < editEntityIndexList.Count; i++) {
 			Entity entity = entities[editEntityIndexList[i]];
 			AnimationData.FrameData frameData = entity.GetCurrentFrameData();
-			int pushBoxHeight = GetPushBoxHeight(frameData.pushBox);
+			int pushBoxHeight = GetPushBoxHeight(frameData.pushBox, entity.position.y);
 
 			if (pushBoxHeight < 0) {
 				entity.position.y -= pushBoxHeight;
+				if (entity.velocity.y < 0)
+					entity.velocity.y = 0;
 				entities[editEntityIndexList[i]] = entity;
 			}
 
@@ -358,8 +360,8 @@ public class Simulation : MonoBehaviour {
 			entity.NextAnimationFrame();
 	}
 
-	public static bool IsPushBoxGrounded(Box pushBox) => GetPushBoxHeight(pushBox) <= 0;
-	public static int GetPushBoxHeight(Box pushBox) => pushBox.position.y - (pushBox.size.y / 2);
+	public static bool IsPushBoxGrounded(Box pushBox, int heightOffset) => GetPushBoxHeight(pushBox, heightOffset) <= 0;
+	public static int GetPushBoxHeight(Box pushBox, int heightOffset) => heightOffset + pushBox.position.y - (pushBox.size.y / 2);
 
 	private void OnGUI() {
 		GUIStyle textStyle = new GUIStyle(GUI.skin.label);
@@ -392,14 +394,14 @@ public class Simulation : MonoBehaviour {
 	public struct GameState {
 		public int frame;
 		public Entity[] entities;
-		public Dictionary<int, Dictionary<EntityVar, int>> customEntityData;
+		public Dictionary<int, Dictionary<int, int>> customEntityData;
 
-		public GameState(int frame, Entity[] entities, Dictionary<int, Dictionary<EntityVar, int>> customData) {
+		public GameState(int frame, Entity[] entities, Dictionary<int, Dictionary<int, int>> customData) {
 			this.frame = frame;
 			this.entities = entities;
 
 			customEntityData = new();
-			foreach (KeyValuePair<int, Dictionary<EntityVar, int>> data in customData)
+			foreach (KeyValuePair<int, Dictionary<int, int>> data in customData)
 				customEntityData.Add(data.Key, new(data.Value));
 		}
 	}

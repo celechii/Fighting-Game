@@ -16,7 +16,7 @@ public class EntityData : ScriptableObject {
 
 	[System.Serializable]
 	public struct CustomData : INameableElement {
-		public EntityVar variable;
+		public int variable;
 		public int value;
 		[SerializeField]
 		private bool isBoolean;

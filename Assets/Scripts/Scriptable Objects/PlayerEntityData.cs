@@ -4,6 +4,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "EntityData/Character")]
 public class PlayerEntityData : EntityData {
 
+	private enum CustomPlayerData {
+		Health,
+		HitStunFrames,
+		HitStopFrames
+	}
+
 	[Header("Character Data")]
 	public string displayName;
 
@@ -23,7 +29,7 @@ public class PlayerEntityData : EntityData {
 	[Header("Animation Commands")]
 	[NameElements]
 	[SerializeField]
-	private Commands[] attackCommands;
+	private Command[] attackCommands;
 
 	[Header("Animations")]
 	[SerializeField]
@@ -48,13 +54,13 @@ public class PlayerEntityData : EntityData {
 		// check if we can skip *damage*
 		bool canSkipDamage = false;
 		currentFrame = entity.GetCurrentFrameData();
-		if (currentFrame.frameFlags.HasFlag(FrameFlags.Invincible) || Simulation.Instance.CustomEntityData[entity.ID][EntityVar.IFrames] > 0)
+		if (currentFrame.frameFlags.HasFlag(FrameFlags.Invincible))
 			canSkipDamage = true;
 
 		// deal damage
-		if (!canSkipDamage && Simulation.Instance.TryGetCustomData(entity, EntityVar.Health, out int currentHealth)) {
+		if (!canSkipDamage && Simulation.Instance.TryGetCustomData(entity, CustomPlayerData.Health, out int currentHealth)) {
 			int newHealth = Mathf.Max(0, currentHealth - hitData.damage);
-			Simulation.Instance.SetCustomData(entity, EntityVar.Health, newHealth);
+			// Simulation.Instance.SetCustomData(entity, CustomPlayerData.Health, newHealth);
 		}
 
 		// deal knockback as simple set velocity
@@ -62,7 +68,7 @@ public class PlayerEntityData : EntityData {
 
 		// apply hitstun
 		// this OVERWRITES the number of stunframes
-		Simulation.Instance.SetCustomData(entity, EntityVar.HitStunFrames, hitData.stunFrames);
+		// Simulation.Instance.SetCustomData(entity, CustomPlayerData.HitStunFrames, hitData.stunFrames);
 
 		return entity;
 	}
@@ -73,14 +79,14 @@ public class PlayerEntityData : EntityData {
 	public override Entity UpdateBehaviour(Entity entity) {
 		currentFrame = entity.GetCurrentFrameData();
 
-		isGrounded = Simulation.IsPushBoxGrounded(currentFrame.pushBox);
+		isGrounded = Simulation.IsPushBoxGrounded(currentFrame.pushBox, entity.position.y);
 
 		currentInput = entity.playerOwner == 1 ? Simulation.Instance.CurrentLocalInput : Simulation.Instance.CurrentRemoteInput;
 		prevInput = entity.playerOwner == 1 ? Simulation.Instance.PrevLocalInput : Simulation.Instance.PrevRemoteInput;
 
 		// check jump
-		if (CheckBufferedAction(() => isGrounded && currentInput.Has(Input.Jump), () => currentInput.Has(Input.Jump) && !prevInput.Has(Input.Jump), entity, EntityVar.BufferedJump, jumpBufferFrames))
-			entity.velocity.y = jumpForce;
+		// if (CheckBufferedAction(() => isGrounded && currentInput.Has(Input.Jump), () => currentInput.Has(Input.Jump) && !prevInput.Has(Input.Jump), entity, EntityVar.BufferedJump, jumpBufferFrames))
+		// 	entity.velocity.y = jumpForce;
 
 		UpdateFalling(ref entity);
 
@@ -91,25 +97,25 @@ public class PlayerEntityData : EntityData {
 		return entity;
 	}
 
-	protected bool CheckBufferedAction(System.Func<bool> condition, System.Func<bool> activator, Entity entity, EntityVar bufferVariable, int maxBufferFrames) {
-		int bufferFrames = Simulation.Instance.CustomEntityData[entity.ID][bufferVariable];
+	// protected bool CheckBufferedAction(System.Func<bool> condition, System.Func<bool> activator, Entity entity, EntityVar bufferVariable, int maxBufferFrames) {
+	// 	int bufferFrames = Simulation.Instance.CustomEntityData[entity.ID][bufferVariable];
 
-		if (activator.Invoke())
-			bufferFrames = maxBufferFrames + 1;
+	// 	if (activator.Invoke())
+	// 		bufferFrames = maxBufferFrames + 1;
 
-		if (bufferFrames > 0) { // if we want to do it
-			// if we can do it then go!
-			if (condition.Invoke()) {
-				Simulation.Instance.SetCustomData(entity, bufferVariable, 0);
-				return true;
-			}
+	// 	if (bufferFrames > 0) { // if we want to do it
+	// 		// if we can do it then go!
+	// 		if (condition.Invoke()) {
+	// 			Simulation.Instance.SetCustomData(entity, bufferVariable, 0);
+	// 			return true;
+	// 		}
 
-			// if we can't, decrement the buffer frames for later
-			Simulation.Instance.SetCustomData(entity, bufferVariable, bufferFrames - 1);
-		}
+	// 		// if we can't, decrement the buffer frames for later
+	// 		Simulation.Instance.SetCustomData(entity, bufferVariable, bufferFrames - 1);
+	// 	}
 
-		return false;
-	}
+	// 	return false;
+	// }
 
 	protected virtual void UpdateFalling(ref Entity entity) {
 		if (isGrounded || currentFrame.frameFlags.Has(FrameFlags.FreezeFall))
@@ -147,12 +153,17 @@ public class PlayerEntityData : EntityData {
 	}
 
 	[System.Serializable]
-	private struct Commands : INameableElement {
+	private struct Command : INameableElement {
+		[System.Flags]
+		public enum Condition {
+			IsGrounded = 1 << 0,
+			IsAirborn = 1 << 1
+		}
+
 		public Input requiredInput;
+		public Condition additionalConditions;
 		public AnimationData animation;
 
-		public string GetArrayElementName(int index) {
-			return $"{requiredInput.MakeEnumReadable()}: {animation.name}";
-		}
+		public string GetArrayElementName(int index) => $"{requiredInput.MakeEnumReadable()}: {animation.name}";
 	}
 }

@@ -10,21 +10,23 @@ public struct Entity {
 	public int playerOwner; // 0 for no owner, 1 for player 1, 2 for player 2
 	public int entityHash;
 	public EntityType type;
+	public int stateIndex;
 	public int animationHash;
 	public int animationFrame;
 	public Vector2Int position;
 	public Vector2Int velocity;
 	public bool isFacingRight;
 
-	public Entity(EntityData entityData, int playerOwner) {
+	public Entity(EntityFSM entityController, int playerOwner) {
 		ID = entityID;
 		entityID++;
 
-		type = entityData.type;
+		type = entityController.Type;
 		this.playerOwner = playerOwner;
-		this.entityHash = ObjectRef.GetHash(entityData);
-		this.animationHash = ObjectRef.GetHash(entityData.initialAnimation);
+		this.entityHash = ObjectRef.GetHash(entityController);
+		this.animationHash = 0;
 
+		stateIndex = 0;
 		animationFrame = 0;
 		position = Vector2Int.zero;
 		velocity = Vector2Int.zero;
@@ -45,7 +47,10 @@ public struct Entity {
 	}
 
 	public void SetAnimation(AnimationData animationData) {
-		animationHash = ObjectRef.GetHash(animationData);
+		int hash = ObjectRef.GetHash(animationData);
+		if (animationHash != hash) // set the animation to the start if if's a new animation
+			animationFrame = 0;
+		animationHash = hash;
 	}
 
 	public void NextAnimationFrame() {
