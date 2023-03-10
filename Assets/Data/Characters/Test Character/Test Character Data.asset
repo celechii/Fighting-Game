@@ -9,18 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97a41c8dbf098479585606d42b442980, type: 3}
-  m_Name: Test Character
+  m_Script: {fileID: 11500000, guid: e107c3bedd8d84a3e81f8172fc02c594, type: 3}
+  m_Name: Test Character Data
   m_EditorClassIdentifier: 
-  Type: 0
-  allStates: []
-  defaultData:
-  - variable: 0
-    defaultValue: 100
-    isBool: 0
-  - variable: 1
-    defaultValue: 0
-    isBool: 0
-  - variable: 2
-    defaultValue: 0
-    isBool: 0
+  DisplayName: Test Character
+  MaxSpeed: 20
+  GroundAccel: 8
+  GroundDecel: 7
+  AirAccel: 6
+  AirDecel: 2
+  DefaultGravity: 7
+  JumpGravity: 4

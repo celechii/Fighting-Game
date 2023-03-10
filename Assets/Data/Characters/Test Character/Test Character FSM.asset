@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97a41c8dbf098479585606d42b442980, type: 3}
+  m_Name: Test Character FSM
+  m_EditorClassIdentifier: 
+  Type: 0
+  allStates:
+  - {fileID: 11400000, guid: 3eb238fff95c04ea9a23972434d27eb8, type: 2}
+  defaultData:
+  - variable: 0
+    defaultValue: 100
+    isBool: 0
+  - variable: 1
+    defaultValue: 0
+    isBool: 0
+  - variable: 2
+    defaultValue: 0
+    isBool: 0

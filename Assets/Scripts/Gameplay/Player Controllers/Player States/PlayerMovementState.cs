@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "Entity State/Player/Movement")]
 public class PlayerMovementState : PlayerEntityState {
 	[Header("Movement")]
 	[SerializeField]
@@ -23,12 +24,24 @@ public class PlayerMovementState : PlayerEntityState {
 	}
 
 	public override Entity UpdateBehaviour(Entity entity, ref EntityState transitionToState) {
-		entity = base.UpdateBehaviour(entity, ref transitionToState);
-		
 		currentInput = Simulation.Instance.GetCurrentInput(entity);
 		prevInput = Simulation.Instance.GetPrevInput(entity);
 		
+		bool isGrounded = Simulation.IsPushBoxGrounded(CurrentFrame.pushBox, entity.position.y);
 		
+		int accel = isGrounded ? playerData.GroundAccel : playerData.AirAccel;
+		int decel = isGrounded ? playerData.GroundDecel : playerData.AirDecel;
+		
+		int movementInput = (currentInput.Has(Input.MoveLeft) ? -1 : 0) + (currentInput.Has(Input.MoveRight) ? 1 : 0);
+		
+		if (movementInput != 0) {
+			entity.velocity.x = Mathf.Clamp(entity.velocity.x + (accel * movementInput), -maxSpeed, maxSpeed);
+		} else {
+			if (Mathf.Abs(entity.velocity.x) > 0)
+				entity.velocity.x -= Mathf.Min(Mathf.Abs(entity.velocity.x), decel) * (int)Mathf.Sign(entity.velocity.x);
+		}
+		
+		entity = base.UpdateBehaviour(entity, ref transitionToState);
 		
 		SetAppropriateAnim(ref entity);
 		return entity;
@@ -36,9 +49,11 @@ public class PlayerMovementState : PlayerEntityState {
 
 	// pick animation depending on velocity and grounded state
 	private void SetAppropriateAnim(ref Entity entity) {
-		if (entity.velocity.x == 0 && !currentInput.Has(Input.MoveLeft) && !currentInput.Has(Input.MoveRight))
-			entity.SetAnimation(idleAnim);
-		else
+		if (Sign(entity.velocity.x) == Sign((currentInput.Has(Input.MoveLeft) ? -1 : 0) + (currentInput.Has(Input.MoveRight) ? 1 : 0)))
 			entity.SetAnimation(runAnim);
+		else
+			entity.SetAnimation(idleAnim);
 	}
+
+	private int Sign(int value) => value > 0 ? 1 : value < 0 ? -1 : 0;
 }

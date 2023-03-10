@@ -6,7 +6,6 @@ public class PlayerData : ScriptableObject {
 	public string DisplayName;
 
 	[Header("Movement")]
-	public int MaxSpeed = 10;
 	public int GroundAccel = 1;
 	public int GroundDecel = 1;
 	public int AirAccel = 1;

@@ -54,6 +54,7 @@ public struct Entity {
 	}
 
 	public void NextAnimationFrame() {
+		int prevFrame = animationFrame;
 		animationFrame = ObjectRef.GetObject<AnimationData>(animationHash).GetNextFrameIndex(animationFrame);
 	}
 }

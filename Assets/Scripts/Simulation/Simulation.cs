@@ -26,7 +26,7 @@ public class Simulation : MonoBehaviour {
 	private int maxRollbackFrames = 10;
 	[Tooltip("This is how many simulation units there are in 1 Unity unit.")]
 	public int simulationScale = 128;
-	
+
 	[Header("Physics")]
 	[Tooltip("How many units push boxes should be moved on frames where one isn't grounded.")]
 	[SerializeField]
@@ -83,6 +83,9 @@ public class Simulation : MonoBehaviour {
 
 		LocalInputHistory.Clear();
 		RemoteInputHistory.Clear();
+		// populate input history with at least 1 item
+		LocalInputHistory.Add(0);
+		RemoteInputHistory.Add(0);
 
 		entities.Clear();
 		CreateEntity(player1FSM, isLocalPlayer1 ? 1 : 2);
@@ -119,6 +122,8 @@ public class Simulation : MonoBehaviour {
 	// public void SetCustomData<TEnum>(Entity entity, TEnum variable, int value) where TEnum : struct, System.IConvertible => SetCustomData(entity, Convert.ToInt32(variable), value);
 	// public void SetCustomData(Entity entity, int variable, bool value) => SetCustomData(entity, variable, value ? 1 : 0);
 	public void SetCustomData(Entity entity, int variable, int value) {
+		if (!CustomEntityData.ContainsKey(entity.ID))
+			CustomEntityData.Add(entity.ID, new());
 		if (!CustomEntityData[entity.ID].ContainsKey(variable))
 			CustomEntityData[entity.ID].Add(variable, 0);
 		CustomEntityData[entity.ID][variable] = value;
@@ -192,8 +197,8 @@ public class Simulation : MonoBehaviour {
 		CurrentFrame++;
 
 		ProcessHurtBoxes();
-		UpdateEntityBehaviours();
 		UpdateEntityAnimations();
+		UpdateEntityBehaviours();
 		ProcessPushBoxes();
 	}
 
@@ -350,14 +355,17 @@ public class Simulation : MonoBehaviour {
 
 	private void UpdateEntityBehaviours() {
 		for (int i = 0; i < entities.Count; i++) {
-			EntityData entityData = ObjectRef.GetObject<EntityData>(entities[i].entityHash);
-			entities[i] = entityData.UpdateBehaviour(entities[i]);
+			EntityFSM entityFSM = ObjectRef.GetObject<EntityFSM>(entities[i].entityHash);
+			entities[i] = entityFSM.UpdateBehaviour(entities[i]);
 		}
 	}
 
 	private void UpdateEntityAnimations() {
-		foreach (Entity entity in entities)
+		for (int i = 0; i < entities.Count; i++) {
+			Entity entity = entities[i];
 			entity.NextAnimationFrame();
+			entities[i] = entity;
+		}
 	}
 
 	public static bool IsPushBoxGrounded(Box pushBox, int heightOffset) => GetPushBoxHeight(pushBox, heightOffset) <= 0;

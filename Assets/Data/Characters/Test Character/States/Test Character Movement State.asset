@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 792c4c5404a904b35af25e8e34e848c3, type: 3}
+  m_Name: Test Character Movement State
+  m_EditorClassIdentifier: 
+  CurrentFrame:
+    sprite: {fileID: 0}
+    frameDuration: 0
+    spriteOffset: {x: 0, y: 0}
+    frameFlags: 0
+    pushBox:
+      ownerEntityHash: 0
+      position: {x: 0, y: 0}
+      size: {x: 0, y: 0}
+    hitBoxes: []
+    hurtBoxes: []
+    frameCommands: []
+  playerData: {fileID: 11400000, guid: 5f03cc000b67145829b1fa50be4b05a7, type: 2}
+  applyGravity: 1
+  applyVelocity: 1
+  applyGroundCollision: 1
+  maxSpeed: 20
+  idleAnim: {fileID: 11400000, guid: c419d80959b6e4e02ad38c1a5e6b0f23, type: 2}
+  runAnim: {fileID: 11400000, guid: 7cc7662a9211e43a2a0e1cb7264599d3, type: 2}

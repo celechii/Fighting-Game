@@ -65,7 +65,7 @@ public class AnimationData : ScriptableObject, INameableElement {
 	/// </summary>
 	public int GetNextFrameIndex(int currentFrameIndex) {
 		currentFrameIndex++;
-		if (currentFrameIndex == TotalFrames) {
+		if (currentFrameIndex > TotalFrames) {
 			if (loop)
 				currentFrameIndex = 0;
 			else

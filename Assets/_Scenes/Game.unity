@@ -158,7 +158,7 @@ MonoBehaviour:
   LocalInputHistory: 
   RemoteInputHistory: 
   FrameByFrame: 0
-  inputBufferFrames: 3
+  inputBufferFrames: 0
   maxRollbackFrames: 100
   simulationScale: 128
   pushBoxSoftReject: 1
@@ -166,8 +166,8 @@ MonoBehaviour:
   isLocalPlayer1: 1
   startSeparationDistance: 500
   entityManager: {fileID: 944778735}
-  player1EntityData: {fileID: 11400000, guid: 84e9e97be7ced4568a29aaaa583c66c0, type: 2}
-  player2EntityData: {fileID: 11400000, guid: 84e9e97be7ced4568a29aaaa583c66c0, type: 2}
+  player1FSM: {fileID: 11400000, guid: 74c757989793446da959d848060689c7, type: 2}
+  player2FSM: {fileID: 11400000, guid: 74c757989793446da959d848060689c7, type: 2}
 --- !u!4 &409325948
 Transform:
   m_ObjectHideFlags: 0

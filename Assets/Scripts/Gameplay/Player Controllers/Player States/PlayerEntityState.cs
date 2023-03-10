@@ -13,6 +13,8 @@ public abstract class PlayerEntityState : EntityState {
 	private bool applyVelocity = true;
 	[SerializeField]
 	private bool applyGroundCollision = true;
+	[SerializeField]
+	private bool updateFacingDirection = true;
 
 	public override Entity ProcessCollisions(Entity entity, ref EntityState transitionToState) {
 		
@@ -28,6 +30,8 @@ public abstract class PlayerEntityState : EntityState {
 				ApplyGravity(ref entity);
 			
 			entity.position += entity.velocity;
+			if (updateFacingDirection && Mathf.Abs(entity.velocity.x) > 0)
+				entity.isFacingRight = entity.velocity.x > 0;
 		}
 
 		if (applyGroundCollision)
